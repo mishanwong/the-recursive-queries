@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS Locations (
 );
 
 CREATE TABLE IF NOT EXISTS ProductsLocations (
-  productLocationId INT  NOT NULL,
+  productLocationId INT NOT NULL AUTO_INCREMENT,
   productId INT NOT NULL,
   locationId INT NOT NULL,
   quantity INT NOT NULL,

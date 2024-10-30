@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS SalesProducts (
   saleId INT  NOT NULL,
   quantity INT NOT NULL,
   PRIMARY KEY (saleProductId),
-  FOREIGN KEY (productId) REFERENCES Sales(saleId)
+  FOREIGN KEY (productId) REFERENCES Products(productId)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  FOREIGN KEY (saleId) REFERENCES Products(productId)
+  FOREIGN KEY (saleId) REFERENCES Sales(saleId)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS ProductsLocations (
   locationId INT NOT NULL,
   quantity INT NOT NULL,
   PRIMARY KEY (productLocationId),
-  FOREIGN KEY (productId) Products(productId)
+  FOREIGN KEY (productId) REFERENCES Products(productId)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (locationId) REFERENCES Locations(locationId)

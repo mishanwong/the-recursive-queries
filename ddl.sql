@@ -1,6 +1,10 @@
+-- Group 43: Mishan Wong, Matthew Wygal
+-- ddl.sql
+
 SET FOREIGN_KEY_CHECKS=0;
 SET AUTOCOMMIT=0;
 
+-- Table Creation ---------------------
 CREATE TABLE IF NOT EXISTS Customers (
   customerId INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL,
@@ -73,7 +77,7 @@ CREATE TABLE IF NOT EXISTS ProductsLocations (
     ON UPDATE CASCADE
 );
 
--- Inserting in values ---------------------------------------
+-- Inserting in values ------------------
 
 -- Categories
 INSERT INTO Categories (name)
@@ -108,10 +112,60 @@ VALUES ('A', '1', '2', 2),
 ('B', '4', '5', 2);
 
 -- Sales
-
+INSERT INTO Sales (date, customerId)
+VALUES (
+  '2024-06-06 13:03:30',
+  (SELECT customerId FROM Customers WHERE name = 'Sven Garcia')
+),
+(
+  '2024-06-30 20:21:15',
+  (SELECT customerId FROM Customers WHERE name = 'MJ Lee')
+),
+(
+  '2024-07-14 06:35:51',
+  (SELECT customerId FROM Customers WHERE name = 'Kate Cole')
+),
+(
+  '2024-08-10 11:18:03',
+  (SELECT customerId FROM Customers WHERE name = 'Abdul Smith')
+),
+(
+  '2024-09-22 15:38:32',
+  (SELECT customerId FROM Customers WHERE name = 'Sam S')
+);
 
 -- SalesProducts
-
+INSERT INTO SalesProducts (productId, saleId, quantity, lineTotal)
+VALUES (
+  (SELECT productId FROM Products WHERE name = 'Yum Shrimp Chips'),
+  (SELECT saleId FROM Sales WHERE saleId = 1),
+  2,
+  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Healthy Chicken Rice Set'),
+  (SELECT saleId FROM Sales WHERE saleId = 1),
+  1,
+  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Travel Toothbrush Set'),
+  (SELECT saleId FROM Sales WHERE saleId = 3),
+  1,
+  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Super Sparkling Water'),
+  (SELECT saleId FROM Sales WHERE saleId = 3),
+  5,
+  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Pocket Wet Tissues'),
+  (SELECT saleId FROM Sales WHERE saleId = 3),
+  3,
+  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+);
 
 -- ProductsLocations
 INSERT INTO ProductsLocations (productId, locationId, quantity)
@@ -143,4 +197,3 @@ VALUES (
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
-

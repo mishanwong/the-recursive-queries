@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS Customers (
 CREATE TABLE IF NOT EXISTS Sales (
   saleId INT NOT NULL AUTO_INCREMENT,
   date DATETIME NOT NULL,
-  totalPrice DECIMAL(12,2) NOT NULL,
   customerId INT NULL,
   PRIMARY KEY (saleId),
   FOREIGN KEY (customerId) REFERENCES Customers(customerId)
@@ -41,6 +40,7 @@ CREATE TABLE IF NOT EXISTS SalesProducts (
   productId INT NOT NULL,
   saleId INT  NOT NULL,
   quantity INT NOT NULL,
+  lineTotal DECIMAL(12,2) NOT NULL,
   PRIMARY KEY (saleProductId),
   FOREIGN KEY (productId) REFERENCES Products(productId)
     ON DELETE CASCADE
@@ -73,5 +73,74 @@ CREATE TABLE IF NOT EXISTS ProductsLocations (
     ON UPDATE CASCADE
 );
 
+-- Inserting in values ---------------------------------------
+
+-- Categories
+INSERT INTO Categories (name)
+VALUES ("Health and Beauty"),
+("Snacks"),
+("Paper"),
+("Prepared Food"),
+("Drinks");
+
+-- Customers
+INSERT INTO Customers (name)
+VALUES ("Sam S"),
+("MJ Lee"),
+("Kate Cole"),
+("Abdul Smith"),
+("Sven Garcia");
+
+-- Products
+INSERT INTO Products (categoryId, name, unitPrice)
+VALUES ((SELECT categoryId FROM Categories WHERE name = 'Paper'), "Pocket Wet Tissues", 3.99),
+((SELECT categoryId FROM Categories WHERE name = 'Snacks'), 'Yum Shrimp Chips', 2.50),
+((SELECT categoryId FROM Categories WHERE name = 'Health and Beauty'), 'Travel Toothbrush Set', 5.00),
+((SELECT categoryId FROM Categories WHERE name = 'Prepared Food'), 'Healthy Chicken Rice Set', 8.25),
+((SELECT categoryId FROM Categories WHERE name = 'Drinks'), 'Super Sparkling Water', 2.00);
+
+-- Locations
+INSERT INTO Locations (aisle, shelf, slot, capacity)
+VALUES ('A', '1', '2', 2),
+('B', '2', '4', 1),
+('D', '2', '3', 4),
+('A', '5', '4', 3),
+('B', '4', '5', 2);
+
+-- Sales
+
+
+-- SalesProducts
+
+
+-- ProductsLocations
+INSERT INTO ProductsLocations (productId, locationId, quantity)
+VALUES (
+  (SELECT productId FROM Products WHERE name = 'Pocket Wet Tissues'),
+  (SELECT locationId FROM Locations WHERE locationId = 2),
+  3
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Yum Shrimp Chips'),
+  (SELECT locationId FROM Locations WHERE locationId = 4),
+  6
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Travel Toothbrush Set'),
+  (SELECT locationId FROM Locations WHERE locationId = 1),
+  4
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Healthy Chicken Rice Set'),
+  (SELECT locationId FROM Locations WHERE locationId = 5),
+  8
+),
+(
+  (SELECT productId FROM Products WHERE name = 'Super Sparkling Water'),
+  (SELECT locationId FROM Locations WHERE locationId = 3),
+  12
+);
+
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
+

@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { Table } from "../components/Table";
-import { Form } from "../components/Form";
+import React from "react";
+import { Page } from "./Page";
 
 export const Categories = () => {
-  const [type, setType] = useState("");
-  const [selected, setSelected] = useState(null);
-
   const sampleData = [
     { categoryId: 1, name: "Health and Beauty" },
     { categoryId: 2, name: "Snacks" },
@@ -19,24 +15,13 @@ export const Categories = () => {
     { label: "Name", name: "name" },
   ];
 
-  const handleFromTable = (data) => {
-    setType(data[0]);
-    if (data.length > 1) {
-      setSelected(data[1]);
-    }
-  };
   return (
     <div>
       <h1>Categories</h1>
-      <Table
-        data={sampleData}
-        fromTable={handleFromTable}
-      />
-      <Form
-        tableName="Category"
+      <Page
+        sampleData={sampleData}
         attributes={attributes}
-        selected={selected}
-        type={type}
+        tableName="Category"
       />
     </div>
   );

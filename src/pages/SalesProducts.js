@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { Table } from "../components/Table";
-import { Form } from "../components/Form";
+import React from "react";
+import { Page } from "./Page";
 
 export const SalesProducts = () => {
-  const [type, setType] = useState("");
-  const [selected, setSelected] = useState(null);
-
   const sampleData = [
     { saleProductId: 1, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
     { saleProductId: 2, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
@@ -21,24 +17,13 @@ export const SalesProducts = () => {
     { label: "Quantity", name: "quantity" },
     { label: "Line Total", name: "lineTotal" },
   ];
-  const handleFromTable = (data) => {
-    setType(data[0]);
-    if (data.length > 1) {
-      setSelected(data[1]);
-    }
-  };
   return (
     <div>
       <h1>SalesProducts</h1>
-      <Table
-        data={sampleData}
-        fromTable={handleFromTable}
-      />
-      <Form
-        tableName="SaleProduct"
+      <Page
+        sampleData={sampleData}
         attributes={attributes}
-        selected={selected}
-        type={type}
+        tableName="SaleProduct"
       />
     </div>
   );

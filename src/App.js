@@ -12,7 +12,7 @@ import { Locations } from "./pages/Locations";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/the-recursive-queries">
       <h1>Happy Day Convenience Store</h1>
       <Navigation />
       <Routes>

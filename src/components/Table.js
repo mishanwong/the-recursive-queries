@@ -50,13 +50,12 @@ const Action = styled.div`
   }
 `;
 
-export const Table = ({ data, fromTable }) => {
+export const Table = ({ data, fromTable, headers }) => {
   if (!data || data.length === 0) {
     return <p>No data available</p>;
   }
 
-  const headers = Object.keys(data[0]);
-
+  const keys = Object.keys(data[0]);
   return (
     <StyledTable>
       <thead>
@@ -72,8 +71,8 @@ export const Table = ({ data, fromTable }) => {
       <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
-            {headers.map((header, colIndex) => (
-              <td key={colIndex}>{row[header]}</td>
+            {keys.map((item, colIndex) => (
+              <td key={colIndex}>{row[item]}</td>
             ))}
             <td>
               <Action onClick={() => fromTable(["edit", row])}>Edit</Action>{" "}

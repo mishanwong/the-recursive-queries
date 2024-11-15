@@ -25,49 +25,127 @@ export const locations = [
 export const products = [
   {
     productId: 1,
-    categoryId: 1,
+    category: "Paper",
     name: "Pocker Wet Tissues",
-    unitPrice: 3.99,
+    unitPrice: "3.99",
   },
-  { productId: 2, categoryId: 1, name: "Yum Shrimp Chips", unitPrice: 2.5 },
+  {
+    productId: 2,
+    category: "Snacks",
+    name: "Yum Shrimp Chips",
+    unitPrice: "2.50",
+  },
   {
     productId: 3,
-    categoryId: 1,
+    category: "Health and Beauty",
     name: "Travel Toothbrush Set",
-    unitPrice: 5.0,
+    unitPrice: "5.00",
   },
   {
     productId: 4,
-    categoryId: 1,
+    category: "Prepared Food",
     name: "Healthy Chicken Rice Set",
-    unitPrice: 8.25,
+    unitPrice: "8.25",
   },
   {
     productId: 5,
-    categoryId: 1,
+    category: "Drinks",
     name: "Super Sparkling Water",
-    unitPrice: 2,
+    unitPrice: "2.00",
   },
 ];
 
 export const producstLocations = [
-  { productLocationId: 1, productId: 1, locationId: 2, quantity: 5 },
-  { productLocationId: 2, productId: 1, locationId: 2, quantity: 5 },
-  { productLocationId: 3, productId: 1, locationId: 2, quantity: 5 },
-  { productLocationId: 4, productId: 1, locationId: 2, quantity: 5 },
-  { productLocationId: 5, productId: 1, locationId: 2, quantity: 5 },
+  {
+    productLocationId: 1,
+    product: "Pocket Wet Tissues",
+    location: "B-2-4",
+    quantity: 3,
+  },
+  {
+    productLocationId: 2,
+    product: "Yum Shrimp Chips",
+    location: "A-5-4",
+    quantity: 6,
+  },
+  {
+    productLocationId: 3,
+    product: "Travel Toothbrush Set",
+    location: "A-1-2",
+    quantity: 4,
+  },
+  {
+    productLocationId: 4,
+    product: "Healthy Chicken Rice Set",
+    location: "B-4-5",
+    quantity: 8,
+  },
+  {
+    productLocationId: 5,
+    product: "Super Sparkling Water",
+    location: "D-2-3",
+    quantity: 12,
+  },
 ];
 
 export const sales = [
-  { saleId: 1, date: "2024-06-06", customerId: 1 },
-  { saleId: 2, date: "2024-06-30", customerId: 2 },
-  { saleId: 3, date: "2024-07-14", customerId: 3 },
+  { saleId: 1, date: "2024-06-06", customer: "Sam S" },
+  { saleId: 2, date: "2024-06-30", customer: "MJ Lee" },
+  { saleId: 3, date: "2024-07-14", customer: "Kate Cole" },
 ];
 
 export const salesProducts = [
-  { saleProductId: 1, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-  { saleProductId: 2, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-  { saleProductId: 3, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-  { saleProductId: 4, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-  { saleProductId: 5, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
+  {
+    saleProductId: 1,
+    product: "Yum Shrimp Chips",
+    saleId: 1,
+    quantity: 2,
+    lineTotal: "5.00",
+  },
+  {
+    saleProductId: 2,
+    product: "Healthy Chicken Rice Set",
+    saleId: 1,
+    quantity: 1,
+    lineTotal: "8.25",
+  },
+  {
+    saleProductId: 3,
+    product: "Travel Toothbrush Set",
+    saleId: 3,
+    quantity: 1,
+    lineTotal: "5.00",
+  },
+  {
+    saleProductId: 4,
+    product: "Super Sparkling Water",
+    saleId: 3,
+    quantity: 5,
+    lineTotal: "10.00",
+  },
+  {
+    saleProductId: 5,
+    product: "Pocket Wet Tissue",
+    saleId: 3,
+    quantity: 3,
+    lineTotal: "11.97",
+  },
+];
+
+export const salesHeaders = ["ID", "Date", "Customer"];
+export const customersHeaders = ["ID", "Name"];
+export const salesProductsHeaders = [
+  "ID",
+  "Product",
+  "Sale ID",
+  "Quantity",
+  "Subtotal",
+];
+export const productsHeaders = ["ID", "Name", "Category", "Unit Price"];
+export const locationsHeaders = ["ID", "Aisle", "Shelf", "Slot", "Capacity"];
+export const productsLocationsHeaders = [
+  "ID",
+  "Product",
+  "Location",
+  "Quantity",
 ];

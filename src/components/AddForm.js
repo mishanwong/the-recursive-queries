@@ -23,6 +23,11 @@ const Input = styled.input`
   width: 250px;
 `;
 
+const StyledSelect = styled.select`
+  height: 30px;
+  line-height: 30px;
+`;
+
 export const AddForm = ({ tableName, attributes }) => {
   return (
     <div>
@@ -30,15 +35,29 @@ export const AddForm = ({ tableName, attributes }) => {
       <StyledForm onSubmit={() => console.log("Submit")}>
         {attributes.map((input, index) => (
           <InputGroup key={index}>
-            <label key={index}>{input.label}</label>
-            <Input
-              type={input.type || "text"}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={input.value || ""}
-              disabled={input.disabled || false}
-              onChange={() => console.log("Handle change")}
-            />
+            <label key={index}>{input.label}:</label>
+            {input.type === "text" && (
+              <Input
+                type={input.type || "text"}
+                name={input.name}
+                placeholder={input.placeholder}
+                value={input.value || ""}
+                disabled={input.disabled || false}
+                onChange={() => console.log("Handle change")}
+              />
+            )}
+            {input.type === "dropdown" && (
+              <StyledSelect>
+                {input.options.map((option, i) => (
+                  <option
+                    key={i}
+                    value={option.name}
+                  >
+                    {option.name}
+                  </option>
+                ))}
+              </StyledSelect>
+            )}
           </InputGroup>
         ))}
         <ButtonContainer>

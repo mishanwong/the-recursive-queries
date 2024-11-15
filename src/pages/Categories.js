@@ -1,25 +1,22 @@
 import React from "react";
 import { Page } from "./Page";
+import { categories } from "../data/sampleData";
 
 export const Categories = () => {
-  const sampleData = [
-    { categoryId: 1, name: "Health and Beauty" },
-    { categoryId: 2, name: "Snacks" },
-    { categoryId: 3, name: "Paper" },
-    { categoryId: 4, name: "Prepared Food" },
-    { categoryId: 5, name: "Drinks" },
+  const attributes = [
+    { label: "ID", name: "categoryId", type: "text" },
+    { label: "Name", name: "name", type: "text" },
   ];
 
-  const attributes = [
-    { label: "Category ID", name: "categoryId" },
-    { label: "Name", name: "name" },
-  ];
+  const headers = attributes.map((attr) => attr.label);
+  console.log(headers);
 
   return (
     <div>
       <h1>Categories</h1>
       <Page
-        sampleData={sampleData}
+        headers={headers}
+        sampleData={categories}
         attributes={attributes}
         tableName="Category"
       />

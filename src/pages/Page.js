@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form } from "../components/Form";
 import { Table } from "../components/Table";
 
-export const Page = ({ sampleData, attributes, tableName }) => {
+export const Page = ({ sampleData, attributes, tableName, headers }) => {
   const [type, setType] = useState("");
   const [selected, setSelected] = useState(null);
 
@@ -17,7 +17,9 @@ export const Page = ({ sampleData, attributes, tableName }) => {
     <div>
       <div>
         <Table
+          headers={headers}
           data={sampleData}
+          attributes={attributes}
           fromTable={handleFromTable}
         />
         <Form

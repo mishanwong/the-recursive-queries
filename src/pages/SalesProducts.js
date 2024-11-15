@@ -1,27 +1,25 @@
 import React from "react";
 import { Page } from "./Page";
+import {
+  salesProducts,
+  salesProductsHeaders,
+  products,
+} from "../data/sampleData";
 
 export const SalesProducts = () => {
-  const sampleData = [
-    { saleProductId: 1, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-    { saleProductId: 2, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-    { saleProductId: 3, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-    { saleProductId: 4, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-    { saleProductId: 5, productId: 2, saleId: 3, quantity: 2, lineTotal: 5 },
-  ];
-
   const attributes = [
-    { label: "Sale Product ID", name: "saleProductId" },
-    { label: "Product ID", name: "productId" },
-    { label: "Sale ID", name: "saleId" },
-    { label: "Quantity", name: "quantity" },
-    { label: "Line Total", name: "lineTotal" },
+    { label: "ID", name: "saleProductId", type: "text" },
+    { label: "Product", name: "product", type: "dropdown", options: products },
+    { label: "Sale ID", name: "saleId", type: "text" },
+    { label: "Quantity", name: "quantity", type: "text" },
+    { label: "Line Total", name: "lineTotal", type: "text" },
   ];
   return (
     <div>
       <h1>SalesProducts</h1>
       <Page
-        sampleData={sampleData}
+        headers={salesProductsHeaders}
+        sampleData={salesProducts}
         attributes={attributes}
         tableName="SaleProduct"
       />

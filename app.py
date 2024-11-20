@@ -3,7 +3,7 @@
 # Adapted from/based on cs340 github Flask starter guide
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
-from flask import Flask, render_template, json, jsonify
+from flask import Flask, render_template, json, jsonify, request
 import os
 import database.db_connector as db
 
@@ -18,7 +18,7 @@ db_connection = db.connect_to_database()
 def root():
     # return render_template("main.j2")
     # return "Testing..testing..."
-    return redirect('/sale_product_browse')
+    return 'hello cs340 world'
 
 # ------- Select route (display)
 @app.route('/sale_product_browse', methods=['GET'])
@@ -53,7 +53,8 @@ def sale_product_new():
 
             # maybe return json or just redirect?
             # return jsonify(results)
-            return redirect('/sale_product_browse')
+            #return redirect('/sale_product_browse')
+            return jsonify({"message": "Insert into SalesProducts successful"}), 200
     
     else:
         return "Invalid route"
@@ -78,7 +79,7 @@ def sale_product_edit():
             cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
             results = cursor.fetchall()
 
-            return redirect('/sale_product_browse')
+            return jsonify({"message": "Edit SalesProducts successful"}), 200
     
     else:
         return "Invalid route"
@@ -92,10 +93,10 @@ def sale_product_delete(id):
 
     cursor = db.execute_query(db_connection=db_connection, query=query, query_params = id)
 
-    return redirect('/sale_product_browse')
+    return jsonify({"message": "SalesProducts delete successful"}), 200
 
 # -------- Display/browse routes for Products and Sales
-@app.route('products_browse', methods=['GET'])
+@app.route('/products_browse', methods=['GET'])
 def products_browse():
     if request.method == 'GET':
         query = 'SELECT * FROM Products;'
@@ -105,7 +106,7 @@ def products_browse():
     else:
         return 'Invalid route'
 
-@app.route('sales_browse', methods=['GET'])
+@app.route('/sales_browse', methods=['GET'])
 def sales_browse():
     if request.method == 'GET':
         query = 'SELECT * FROM Sales;'
@@ -131,7 +132,7 @@ def product_new():
 
             cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
 
-            return redirect('products_browse')
+            return jsonify({"message": "Insert to Products successful"}), 200
 
 @app.route('/sales_new', methods=['POST'])
 def sales_new():
@@ -150,7 +151,7 @@ def sales_new():
                 params = (date, customerId)
                 cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
             
-            return redirect('/sales_browse')
+            return jsonify({"message": "Insert into Sales successful"}), 200
     
     else:
         return 'Invalid route'

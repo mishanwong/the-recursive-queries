@@ -8,6 +8,6 @@ const StyledButton = styled.button`
   border: none;
   border-radius: 5px;
 `;
-export const Button = ({ text }) => {
-  return <StyledButton>{text}</StyledButton>;
+export const Button = ({ text, type }) => {
+  return <StyledButton type={type}>{text}</StyledButton>;
 };

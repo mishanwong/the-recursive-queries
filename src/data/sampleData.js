@@ -1,3 +1,5 @@
+export const url = "http://classwork.engr.oregonstate.edu:7641";
+
 export const customers = [
   { customerId: 1, name: "Sam S" },
   { customerId: 2, name: "MJ Lee" },
@@ -55,7 +57,7 @@ export const products = [
   },
 ];
 
-export const producstLocations = [
+export const productsLocations = [
   {
     productLocationId: 1,
     product: "Pocket Wet Tissues",
@@ -132,14 +134,18 @@ export const salesProducts = [
   },
 ];
 
-export const salesHeaders = ["ID", "Date", "Customer"];
+export const salesHeaders = [
+  { label: "ID", name: "saleId" },
+  { label: "Date", name: "date" },
+  { label: "Customer", name: "customer" },
+];
 export const customersHeaders = ["ID", "Name"];
 export const salesProductsHeaders = [
-  "ID",
-  "Product",
-  "Sale ID",
-  "Quantity",
-  "Subtotal",
+  { label: "ID", name: "saleProductId" },
+  { label: "Product", name: "name" },
+  { label: "Sale ID", name: "saleId" },
+  { label: "Quantity", name: "quantity" },
+  { label: "Subtotal", name: "lineTotal" },
 ];
 export const productsHeaders = ["ID", "Name", "Category", "Unit Price"];
 export const locationsHeaders = ["ID", "Aisle", "Shelf", "Slot", "Capacity"];

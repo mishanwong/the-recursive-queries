@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Button } from "./Button";
+import { url } from "../data/sampleData";
 
 const StyledForm = styled.form`
   display: flex;
@@ -28,40 +29,89 @@ const StyledSelect = styled.select`
   line-height: 30px;
 `;
 
-export const AddForm = ({ tableName, attributes }) => {
+export const AddForm = ({ tableName, attributes, refresh }) => {
+  const [formValues, setFormValues] = useState(
+    attributes.reduce((acc, attr) => {
+      acc[attr["name"]] = "";
+      return acc;
+    }, {})
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitting...");
+    console.log(formValues);
+    fetch(`${url}/sales_products_new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formValues),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .then(() => refresh());
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
   return (
     <div>
       <h2>Add {tableName}</h2>
-      <StyledForm onSubmit={() => console.log("Submit")}>
-        {attributes.map((input, index) => (
-          <InputGroup key={index}>
-            <label key={index}>{input.label}:</label>
-            {input.type === "text" && (
-              <Input
-                type={input.type || "text"}
-                name={input.name}
-                placeholder={input.placeholder}
-                value={input.value || ""}
-                disabled={input.disabled || false}
-                onChange={() => console.log("Handle change")}
-              />
-            )}
-            {input.type === "dropdown" && (
-              <StyledSelect>
-                {input.options.map((option, i) => (
-                  <option
-                    key={i}
-                    value={option.name}
+      <StyledForm onSubmit={handleSubmit}>
+        {attributes.map((attr, index) => (
+          <div key={index}>
+            {attr.add === true && (
+              <InputGroup key={index}>
+                <label key={index}>{attr.label}:</label>
+                {attr.type !== "dropdown" && (
+                  <Input
+                    type={attr.type || "text"}
+                    name={attr.name}
+                    placeholder={attr.placeholder}
+                    value={formValues[attr.name]}
+                    disabled={attr.disabled || false}
+                    onChange={handleInputChange}
+                  />
+                )}
+                {attr.type === "dropdown" && (
+                  <StyledSelect
+                    name={attr.name}
+                    value={formValues[attr.name]}
+                    onChange={handleInputChange}
                   >
-                    {option.name}
-                  </option>
-                ))}
-              </StyledSelect>
+                    <option
+                      disabled
+                      defaultValue=""
+                      value=""
+                    >
+                      --- select an option ---
+                    </option>
+                    {attr.options.map((option, i) => (
+                      <option
+                        key={i}
+                        value={option[attr.displayField]}
+                      >
+                        {option[attr.displayField]}
+                      </option>
+                    ))}
+                  </StyledSelect>
+                )}
+              </InputGroup>
             )}
-          </InputGroup>
+          </div>
         ))}
         <ButtonContainer>
-          <Button text="Save" />
+          <Button
+            type="submit"
+            text="Save"
+          />
           <Button text="Cancel" />
         </ButtonContainer>
       </StyledForm>

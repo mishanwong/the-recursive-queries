@@ -16,8 +16,6 @@ db_connection = db.connect_to_database()
 
 @app.route('/')
 def root():
-    # return render_template("main.j2")
-    # return "Testing..testing..."
     return 'hello cs340 world'
 
 # ------- Select route (display)
@@ -51,9 +49,6 @@ def sale_product_new():
             cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
             results = cursor.fetchall()
 
-            # maybe return json or just redirect?
-            # return jsonify(results)
-            #return redirect('/sale_product_browse')
             return jsonify({"message": "Insert into SalesProducts successful"}), 200
     
     else:

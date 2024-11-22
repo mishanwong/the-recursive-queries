@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { Form } from "../components/Form";
 import { Table } from "../components/Table";
 
-export const Page = ({ sampleData, attributes, tableName, headers }) => {
+export const Page = ({
+  sampleData,
+  attributes,
+  tableName,
+  headers,
+  refresh,
+}) => {
   const [type, setType] = useState("");
   const [selected, setSelected] = useState(null);
 
@@ -27,6 +33,7 @@ export const Page = ({ sampleData, attributes, tableName, headers }) => {
           attributes={attributes}
           selected={selected}
           type={type}
+          refresh={refresh}
         />
       </div>
     </div>

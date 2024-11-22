@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Button } from "./Button";
+import { url } from "../data/sampleData";
 
 const StyledForm = styled.form`
   display: flex;
@@ -30,10 +31,25 @@ const StyledSelect = styled.select`
 
 export const UpdateForm = ({ tableName, attributes, selected, refresh }) => {
   const [formValues, setFormValues] = useState(selected);
-  console.log(selected);
 
   const handleSubmit = (e) => {
-    console.log("Submitting...");
+    e.preventDefault();
+    // console.log("Submitting...");
+    console.log(formValues);
+    fetch(`${url}/sales_products_edit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formValues),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => refresh());
   };
 
   const handleInputChange = (e) => {
@@ -52,13 +68,13 @@ export const UpdateForm = ({ tableName, attributes, selected, refresh }) => {
             {attr.update && (
               <InputGroup key={index}>
                 <label key={index}>{attr.label}:</label>
-                {attr.type !== "dropdown" && index !== 0 && (
+                {attr.type !== "dropdown" && (
                   <>
                     <Input
                       type={attr.type}
                       name={attr.name}
                       placeholder={attr.placeholder}
-                      value={selected[attr.name] || ""}
+                      value={formValues[attr.name]}
                       disabled={attr.disabled || false}
                       onChange={handleInputChange}
                     />

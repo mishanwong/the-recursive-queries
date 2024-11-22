@@ -48,7 +48,7 @@ export const AddForm = ({ tableName, attributes, refresh }) => {
       },
       body: JSON.stringify(formValues),
     })
-      .then((response) => response.json)
+      .then((response) => response.json())
       .then((data) => console.log(data))
       .then(() => refresh());
   };

@@ -25,6 +25,7 @@ export const Customers = () => {
         headers={customersHeaders}
         data={customers}
         fromTable={handleFromTable}
+        attributes={attributes}
       />
       <Form
         tableName="Customer"

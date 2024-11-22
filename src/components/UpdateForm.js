@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Button } from "./Button";
 
@@ -23,61 +23,74 @@ const Input = styled.input`
   width: 250px;
 `;
 
-const NonInput = styled.div`
-  height: 30px;
-  width: 250px;
-`;
-
 const StyledSelect = styled.select`
   height: 30px;
   line-height: 30px;
 `;
 
-export const UpdateForm = ({ tableName, attributes, selected }) => {
+export const UpdateForm = ({ tableName, attributes, selected, refresh }) => {
+  const [formValues, setFormValues] = useState(selected);
+  console.log(selected);
+
+  const handleSubmit = (e) => {
+    console.log("Submitting...");
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
   return (
     <div>
       <h2>Update {tableName}</h2>
-      <StyledForm onSubmit={() => console.log("Submit")}>
-        {attributes.map((input, index) => (
-          <InputGroup key={index}>
-            <label key={index}>{input.label}:</label>
-            {index === 0 && (
-              <NonInput>{selected[input.name] || input.value}</NonInput>
-            )}
-            {input.type === "text" && index !== 0 && (
-              <>
-                <Input
-                  type={input.type}
-                  name={input.name}
-                  placeholder={input.placeholder}
-                  value={selected[input.name] || ""}
-                  disabled={input.disabled || false}
-                  onChange={() => console.log("Handle change")}
-                />
-              </>
-            )}
-            {input.type === "dropdown" && (
-              <>
-                <StyledSelect>
-                  <option
-                    value=""
-                    disabled
-                  ></option>
-                  {input.options.map((option, i) => (
-                    <option
-                      key={i}
-                      value={option.name}
+      <StyledForm onSubmit={handleSubmit}>
+        {attributes.map((attr, index) => (
+          <div key={index}>
+            {attr.update && (
+              <InputGroup key={index}>
+                <label key={index}>{attr.label}:</label>
+                {attr.type !== "dropdown" && index !== 0 && (
+                  <>
+                    <Input
+                      type={attr.type}
+                      name={attr.name}
+                      placeholder={attr.placeholder}
+                      value={selected[attr.name] || ""}
+                      disabled={attr.disabled || false}
+                      onChange={handleInputChange}
+                    />
+                  </>
+                )}
+                {attr.type === "dropdown" && (
+                  <>
+                    <StyledSelect
+                      name={attr.name}
+                      value={formValues[attr.name]}
+                      onChange={handleInputChange}
                     >
-                      {option.name}
-                    </option>
-                  ))}
-                </StyledSelect>
-              </>
+                      {attr.options.map((option, i) => (
+                        <option
+                          key={i}
+                          value={option[attr.displayField]}
+                        >
+                          {option[attr.displayField]}
+                        </option>
+                      ))}
+                    </StyledSelect>
+                  </>
+                )}
+              </InputGroup>
             )}
-          </InputGroup>
+          </div>
         ))}
         <ButtonContainer>
-          <Button text="Save" />
+          <Button
+            type="submit"
+            text="Save"
+          />
           <Button text="Cancel" />
         </ButtonContainer>
       </StyledForm>

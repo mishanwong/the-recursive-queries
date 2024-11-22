@@ -1,7 +1,7 @@
 import React from "react";
 import { Page } from "./Page";
 import {
-  producstLocations,
+  productsLocations,
   productsLocationsHeaders,
 } from "../data/sampleData";
 
@@ -17,7 +17,7 @@ export const ProductsLocations = () => {
       <h1>ProductsLocations</h1>
       <Page
         headers={productsLocationsHeaders}
-        sampleData={producstLocations}
+        sampleData={productsLocations}
         attributes={attributes}
         tableName="ProductLocation"
       />

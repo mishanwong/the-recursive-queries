@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/the-recursive-queries/static/css/main.7020f438.css",
-    "main.js": "/the-recursive-queries/static/js/main.76d19390.js",
+    "main.js": "/the-recursive-queries/static/js/main.eaa08e1e.js",
     "static/js/453.31ca4405.chunk.js": "/the-recursive-queries/static/js/453.31ca4405.chunk.js",
     "index.html": "/the-recursive-queries/index.html",
     "main.7020f438.css.map": "/the-recursive-queries/static/css/main.7020f438.css.map",
-    "main.76d19390.js.map": "/the-recursive-queries/static/js/main.76d19390.js.map",
+    "main.eaa08e1e.js.map": "/the-recursive-queries/static/js/main.eaa08e1e.js.map",
     "453.31ca4405.chunk.js.map": "/the-recursive-queries/static/js/453.31ca4405.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7020f438.css",
-    "static/js/main.76d19390.js"
+    "static/js/main.eaa08e1e.js"
   ]
 }

@@ -1,0 +1,205 @@
+{% extends "base.j2" %}
+
+{% block content %}
+<h2>SalesProducts</h2>
+<h3>Browse SalesProduct</h3>
+<table>
+<thead>
+<tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+    <th></th>
+    <th></th>
+</tr>
+<tbody>
+{% for row in data %}
+<tr>
+    {% for key in row.keys() %}
+    <td>{{row[key]}}</td>
+    {% endfor %}
+    <td>
+        <button 
+            class="edit-btn" 
+            data-id="{{ row["saleProductId"] }}"
+            data-name="{{ row["name"] }}"
+            data-saleId="{{ row["saleId"] }}"
+            data-quantity="{{ row["quantity" ]}}"
+        >Edit</button>
+    </td>
+    <td>
+        <button 
+            class="delete-btn"
+            data-id="{{ row["saleProductId"] }}"
+            data-name="{{ row["name"] }}"
+            data-saleId="{{ row["saleId"] }}"
+            data-quantity="{{ row["quantity" ]}}" 
+        >Delete</button>
+        </td>
+</tr>
+{% endfor %}
+</table>
+
+<div>
+
+<div id="insert">
+    <h3>Add Sale Product</h3>
+    <form id="addSaleProduct" name="addSaleProduct" method="post" action="{{ url_for("sales_products_new") }}">
+        <fieldset>
+            <div>
+                <label>Product</label>
+                <select name="name">
+                    <option disabled selected>-- select an option --</option>
+                    {% for product in products %}
+                    <option>{{ product["name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label>Sale ID</label>
+                <select name="saleId">
+                    <option disabled selected>-- select an option --</option>
+                    {% for id in saleIds %}
+                    <option>{{ id["saleId"] }}</option> 
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Quantity</label>
+                <input type="number" name="quantity" />
+            </div>
+
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Cancel</button>
+    </form>
+</div>
+
+
+<div id="update">
+    <h3>Update Sale Product</h3>
+    <form id="updateSaleProduct" name="updateSaleProduct" method="post" action="{{ url_for("sales_products_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="saleProductId" />
+            </div>
+
+            <div>
+                <label>Product</label>
+                <select name="name" id="update-name">
+                    <option selected>-- select an option --</option>
+                    {% for product in products %}
+                    <option>{{ product["name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Sale ID</label>
+                <select name="saleId" id="update-saleId">
+                    <option disabled selected>-- select an option --</option>
+                    {% for id in saleIds %}
+                    <option>{{ id["saleId"] }}</option> 
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label>Quantity</label>
+                <input type="number" name="quantity" id="update-quantity" />
+            </div>
+
+        </fieldset>
+        <button type="submit">Update</button>
+        <button type="button" id="clearUpdateForm">Cancel</button>
+    </form>
+</div>
+
+
+<div id="delete">
+    <h3>Delete Sale Product</h3>
+    <form id="deleteSaleProduct" name="deleteSaleProduct" method="post" action="{{ url_for("sales_products_delete") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label>
+                <span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="saleProductId" />
+            </div>
+
+            <div>
+                <label>Product: </label>
+                <span id="delete-name"></span>
+            </div>
+
+            <div>
+                <label>Sale ID</label>
+                <span id="delete-saleId"> </span>
+            </div>
+            
+            <div>
+                <label>Quantity</label>
+                <span id="delete-quantity"> </span>
+            </div>
+            
+        </fieldset>
+        <button type="submit">Delete</button>
+        <button type="button" id="clearDeleteForm">Cancel</button>
+    </form>
+</div>
+
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const name = event.target.getAttribute("data-name");
+            const saleId = event.target.getAttribute("data-saleId");
+            const quantity = event.target.getAttribute("data-quantity");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById('update-name').value = name;
+            document.getElementById('update-saleId').value = saleId;
+            document.getElementById('update-quantity').value = quantity;
+        });
+    });
+
+       document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const name = event.target.getAttribute("data-name");
+            const saleId = event.target.getAttribute("data-saleId");
+            const quantity = event.target.getAttribute("data-quantity");
+
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById("delete-id").value = id;
+            document.getElementById('delete-name').innerText = name;
+            document.getElementById('delete-saleId').innerText = saleId;
+            document.getElementById('delete-quantity').innerText = quantity;
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addSaleProduct").reset()
+    });
+    document.getElementById("clearUpdateForm").addEventListener("click", () => {
+        document.getElementById("updateSaleProduct").reset()
+        document.getElementById("update-id-display").innerText = "";
+    });
+    document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        document.getElementById("deleteSaleProduct").reset()
+        document.getElementById("delete-id-display").innerText = "";
+        document.getElementById('delete-name').innerText = "";
+        document.getElementById('delete-saleId').innerText = "";
+        document.getElementById('delete-quantity').innerText = ""; 
+    });
+ 
+</script>
+{% endblock %}
+
+{% endblock %}
+
+</div>

@@ -1,4 +1,4 @@
-export const url = "https://classwork.engr.oregonstate.edu:7641/proxy";
+export const url = "http://classwork.engr.oregonstate.edu:7641/";
 
 export const customers = [
   { customerId: 1, name: "Sam S" },

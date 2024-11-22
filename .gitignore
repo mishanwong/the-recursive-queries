@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+cs340-project/__pycache__
+cs340-project/trc-env
+cs340-project/.env
+cs340-project/scratch.sql
+cs340-project/steps.txt

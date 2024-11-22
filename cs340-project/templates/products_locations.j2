@@ -1,0 +1,43 @@
+{% extends "base.j2" %}
+
+{% block content %}
+<h2>ProductsLocations</h2>
+<h3>Browse ProductsLocations</h3>
+<table>
+<thead>
+<tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+    <th></th>
+    <th></th>
+</tr>
+<tbody>
+{% for row in data %}
+<tr>
+    {% for key in row.keys() %}
+    <td>{{row[key]}}</td>
+    {% endfor %}
+    <td>
+        <button 
+            class="edit-btn" 
+            data-id="{{ row["saleProductId"] }}" 
+            data-name="{{ row["name"] }}"
+            data-saleId="{{ row["saleId"] }}"
+            data-quantity="{{ row["quantity" ]}}"
+        >Edit</button>
+    </td>
+    <td>
+        <button 
+            class="delete-btn"
+            data-id="{{ row["saleProductId"] }}"
+            data-name="{{ row["name"] }}"
+            data-saleId="{{ row["saleId"] }}"
+            data-quantity="{{ row["quantity" ]}}" 
+        >Delete</button>
+        </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -1,20 +1,23 @@
-import MySQLdb
 import os
 from dotenv import load_dotenv
+import pymysql
+
 
 load_dotenv()
 host = os.environ.get("host")
 user = os.environ.get("user")
 passwd = os.environ.get("passwd") 
 db = os.environ.get("db")
-db_connection = MySQLdb.connect(host,user,passwd,db)
+port = int(os.environ.get("port"))
 
-def connect_to_database(host = host, user = user, passwd = passwd, db = db):
+db_connection = pymysql.connect(host=host, user=user, passwd=passwd, db=db, port=port)
+
+def connect_to_database(host = host, user = user, passwd = passwd, db = db, port = port):
     global db_connection
     try:
         db_connection.ping()
-    except MySQLdb.Error:
-        db_connection = MySQLdb.connect(host, user, passwd, db)
+    except pymysql.Error:
+        db_connection = pymysql.connect(host = host, user = user, passwd = passwd, db = db, port = port)
     return db_connection
 
 def execute_query(db_connection = None, query = None, query_params = ()):
@@ -27,13 +30,8 @@ def execute_query(db_connection = None, query = None, query_params = ()):
         return None
 
     print("Executing %s with %s" % (query, query_params))
-    cursor = db_connection.cursor(MySQLdb.cursors.DictCursor)
-
+    cursor = db_connection.cursor(pymysql.cursors.DictCursor)
     
-    # params = tuple()
-    # for q in query_params:
-    #     params = params + (q)
-
     cursor.execute(query, query_params)
     db_connection.commit()
     return cursor

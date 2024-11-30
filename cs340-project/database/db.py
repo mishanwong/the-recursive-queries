@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import pymysql
-from pymysql.connections import ConnectionPool
 
 
 load_dotenv()
@@ -12,10 +11,7 @@ db = os.environ.get("db")
 port = int(os.environ.get("port"))
 
 db_connection = pymysql.connect(host=host, user=user, passwd=passwd, db=db, port=port)
-pool = ConnectionPool(host=host, user=user, passwd=passwd, db=db, port=port, max_connections=10)
 
-def get_connection_from_pool():
-    return pool.connection()
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db, port = port):
     global db_connection

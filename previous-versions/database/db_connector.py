@@ -13,7 +13,7 @@ import os
 # db = os.environ.get("340DB")
 host = 'classmysql.engr.oregonstate.edu'
 user = 'cs340_wygalm'                                   
-passwd = '8936'                        
+passwd = 'xxxx'                        
 db = 'cs340_wygalm'
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db):

@@ -41,8 +41,8 @@ def sales_products_browse():
         return jsonify(str(e)), 500
     except Exception as e:
         return jsonify(str(e)), 500
-    finally:
-        cursor.close()
+    # finally:
+    #     cursor.close()
 
 @app.route("/products_browse", methods=["GET"])
 def products_browse():

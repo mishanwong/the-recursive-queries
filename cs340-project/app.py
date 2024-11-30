@@ -1,15 +1,13 @@
 from flask import Flask, request, jsonify, render_template, redirect # type: ignore
-from flask_mysqldb import MySQLdb
 from flask_cors import CORS
 import database.db as db
-from collections import OrderedDict
 from datetime import datetime
+import pymysql
 
 app = Flask(__name__)
 CORS(app)
 
 db_connection = db.connect_to_database()
-# mysql = MySQL
 
 @app.route("/")
 def index():
@@ -39,12 +37,12 @@ def sales_products_browse():
 
         headers = ["ID", "Product", "Sale ID", "Quantity", "Subtotal", "Action"]
         return render_template("sales_products.j2", data=results, products=products, saleIds=saleIds, headers=headers)
-    except MySQLdb.DatabaseError as e:
+    except pymysql.DatabaseError as e:
         return jsonify(str(e)), 500
     except Exception as e:
         return jsonify(str(e)), 500
-    finally:
-        cursor.close()
+    # finally:
+    #     cursor.close()
 
 @app.route("/products_browse", methods=["GET"])
 def products_browse():

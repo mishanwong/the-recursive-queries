@@ -143,61 +143,61 @@ VALUES (
 -- SalesProducts
 INSERT INTO SalesProducts (productId, saleId, quantity, lineTotal)
 VALUES (
-  (SELECT productId FROM Products WHERE name = 'Yum Shrimp Chips'),
-  (SELECT saleId FROM Sales WHERE saleId = 1),
+  (SELECT productId FROM Products WHERE Products.name = 'Yum Shrimp Chips'),
+  1,
   2,
-  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+  (SELECT unitPrice FROM Products WHERE Products.name = 'Yum Shrimp Chips') * quantity
 ),
 (
-  (SELECT productId FROM Products WHERE name = 'Healthy Chicken Rice Set'),
-  (SELECT saleId FROM Sales WHERE saleId = 1),
+  (SELECT productId FROM Products WHERE Products.name = 'Healthy Chicken Rice Set'),
   1,
-  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
-),
-(
-  (SELECT productId FROM Products WHERE name = 'Travel Toothbrush Set'),
-  (SELECT saleId FROM Sales WHERE saleId = 3),
   1,
-  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+  (SELECT unitPrice FROM Products WHERE Products.name = 'Healthy Chicken Rice Set') * quantity
 ),
 (
-  (SELECT productId FROM Products WHERE name = 'Super Sparkling Water'),
-  (SELECT saleId FROM Sales WHERE saleId = 3),
-  5,
-  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
-),
-(
-  (SELECT productId FROM Products WHERE name = 'Pocket Wet Tissues'),
-  (SELECT saleId FROM Sales WHERE saleId = 3),
+  (SELECT productId FROM Products WHERE Products.name = 'Travel Toothbrush Set'),
   3,
-  (SELECT unitPrice FROM Products WHERE Products.productId = SalesProducts.productId) * quantity
+  1,
+  (SELECT unitPriceS FROM Products WHERE Products.name = 'Travel Toothbrush Set') * quantity
+),
+(
+  (SELECT productId FROM Products WHERE Products.name = 'Super Sparkling Water'),
+  3,
+  5,
+  (SELECT unitPrice FROM Products WHERE Products.name = 'Super Sparkling Water') * quantity
+),
+(
+  (SELECT productId FROM Products WHERE Products.name = 'Pocket Wet Tissues'),
+  3
+  3,
+  (SELECT unitPrice FROM Products WHERE Products.name = 'Pocket Wet Tissues') * quantity
 );
 
 -- ProductsLocations
 INSERT INTO ProductsLocations (productId, locationId, quantity)
 VALUES (
   (SELECT productId FROM Products WHERE name = 'Pocket Wet Tissues'),
-  (SELECT locationId FROM Locations WHERE locationId = 2),
+  2,
   3
 ),
 (
   (SELECT productId FROM Products WHERE name = 'Yum Shrimp Chips'),
-  (SELECT locationId FROM Locations WHERE locationId = 4),
+  4,
   6
 ),
 (
   (SELECT productId FROM Products WHERE name = 'Travel Toothbrush Set'),
-  (SELECT locationId FROM Locations WHERE locationId = 1),
+  1,
   4
 ),
 (
   (SELECT productId FROM Products WHERE name = 'Healthy Chicken Rice Set'),
-  (SELECT locationId FROM Locations WHERE locationId = 5),
+  5,
   8
 ),
 (
   (SELECT productId FROM Products WHERE name = 'Super Sparkling Water'),
-  (SELECT locationId FROM Locations WHERE locationId = 3),
+  3,
   12
 );
 

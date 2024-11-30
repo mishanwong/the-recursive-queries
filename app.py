@@ -1,158 +1,178 @@
-# Citation for following: app.py
-# Date: 11/20/2024
-# Adapted from/based on cs340 github Flask starter guide
-# Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
-
-from flask import Flask, render_template, json, jsonify, request
-import os
-import database.db_connector as db
-
-# Configuration
+from flask import Flask, request, jsonify, render_template, redirect # type: ignore
+from flask_cors import CORS
+import database.db as db
+from datetime import datetime
+import pymysql
 
 app = Flask(__name__)
+CORS(app)
+
 db_connection = db.connect_to_database()
 
-# Routes 
+@app.route("/")
+def index():
+    return render_template("main.j2")
 
-@app.route('/')
-def root():
-    return 'hello cs340 world'
-
-# ------- Select route (display)
-@app.route('/sale_product_browse', methods=['GET'])
-def sale_product_browse():
-
-    if request.method == 'GET':
-        query = "SELECT * FROM SalesProducts;"
+########################################### SELECT ######################################
+@app.route("/sales_products_browse", methods=["GET"])
+def sales_products_browse():
+    try:
+        query = """
+            SELECT sp.saleProductId, p.name, sp.saleId, sp.quantity, sp.lineTotal  
+            FROM SalesProducts AS sp
+            JOIN Products AS p
+            ON sp.productId = p.productId
+            ORDER BY sp.saleProductId;
+            """
         cursor = db.execute_query(db_connection=db_connection, query=query)
         results = cursor.fetchall()
-        return jsonify(results)
-    else:
-        return "Invalid route"
 
-# -------- Add route
-@app.route('/sale_product_new', methods=['POST'])
-def sale_product_new():
+        query2 = "SELECT name FROM Products;"
+        cur2 = db.execute_query(db_connection=db_connection, query=query2)
+        products = cur2.fetchall()
+        
+        query3 = "SELECT saleId FROM Sales ORDER BY saleId ASC;"
+        cur3 = db.execute_query(db_connection=db_connection, query=query3)
+        saleIds = cur3.fetchall()
 
-    if request.method == 'POST':
+        headers = ["ID", "Product", "Sale ID", "Quantity", "Subtotal", "Action"]
+        return render_template("sales_products.j2", data=results, products=products, saleIds=saleIds, headers=headers)
+    except pymysql.DatabaseError as e:
+        return jsonify(str(e)), 500
+    except Exception as e:
+        return jsonify(str(e)), 500
+    # finally:
+    #     cursor.close()
 
-        if request.form.get('add_sales_products'):  # FORM NAME! :)
-
-            # form variables
-            name = request.form['productName']  # maybe this will be Id? And the form will just show the name, but the value is actually the productId?
-            saleId = request.form['saleId']
-            quantity = int(request.form['quantity'])
-
-            params = (name, saleId, quantity, name, quantity)  # in order for query
-            query = 'INSERT INTO SalesProducts (productId, saleId, quantity, lineTotal) VALUES ((SELECT productId FROM Products WHERE name = %s), %s, %s, (SELECT unitCost FROM Products WHERE name = %s) * %s);'
-
-            cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
-            results = cursor.fetchall()
-
-            return jsonify({"message": "Insert into SalesProducts successful"}), 200
-    
-    else:
-        return "Invalid route"
-    
-# -------- Update route
-@app.route('/sale_product_edit', methods = ['POST'])
-def sale_product_edit():
-
-    if request.method == 'POST':
-
-        if request.form.get('edit_sales_products'):
-
-            # form variables
-            id = request.form['salesId']
-            name = request.form['productName']
-            saleId = request.form['saleId']
-            quantity = int(request.form['quantity'])
-
-            query = 'UPDATE SalesProducts SET SalesProducts.productId = (SELECT productId FROM Products WHERE name = %s), SalesProducts.saleId = %s, SalesProducts.quantity = %s, lineTotal = (SELECT unitCost FROM Products WHERE name = %s) * %s WHERE SalesProducts.saleProductId = %s;'
-            params = (name, saleId, quantity, name, quantity, id)
-
-            cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
-            results = cursor.fetchall()
-
-            return jsonify({"message": "Edit SalesProducts successful"}), 200
-    
-    else:
-        return "Invalid route"
-
-# --------- Delete route
-@app.route('/sale_product_delete<int:id>')
-def sale_product_delete(id):
-
-    # delete query
-    query = 'DELETE FROM SalesProducts WHERE id = %s;'
-
-    cursor = db.execute_query(db_connection=db_connection, query=query, query_params = id)
-
-    return jsonify({"message": "SalesProducts delete successful"}), 200
-
-# -------- Display/browse routes for Products and Sales
-@app.route('/products_browse', methods=['GET'])
+@app.route("/products_browse", methods=["GET"])
 def products_browse():
-    if request.method == 'GET':
-        query = 'SELECT * FROM Products;'
-        cursor = db.execute_query(db_connection=db_connection, query=query)
-        results = cursor.fetchall()
-        return jsonify(results)
-    else:
-        return 'Invalid route'
+    query = """
+    SELECT p.productId, c.name as categoryName, p.name as productName, p.unitPrice FROM Products AS p
+    JOIN Categories as c
+    ON p.categoryId = c.categoryId;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+    headers = ["ID", "Category", "Name", "Unit Price"]
+    return render_template("products.j2", data=results, headers=headers) 
 
-@app.route('/sales_browse', methods=['GET'])
+@app.route("/sales_browse", methods=["GET"])
 def sales_browse():
-    if request.method == 'GET':
-        query = 'SELECT * FROM Sales;'
-        cursor = db.execute_query(db_connection=db_connection, query=query)
-        results = cursor.fetchall()
-        return jsonify(results)
+    query = """
+    SELECT s.saleId, s.date, c.name FROM Sales AS s
+    JOIN Customers AS c
+    ON s.customerId = c.customerId;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+    for result in results:
+        result["date"] = datetime.strftime(result["date"], "%Y-%m-%d")
+
+    headers = ["ID", "Date", "Customer"]
+    return render_template("sales.j2", headers=headers, data=results) 
+
+@app.route("/categories_browse", methods=["GET"])
+def categories_browse():
+    query = """
+        SELECT * FROM Categories;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+
+    headers = ["ID", "Categories"]
+    return render_template("categories.j2", headers=headers, data=results) 
+
+@app.route("/customers_browse", methods=["GET"])
+def customers_browse():
+    query = """
+        SELECT * FROM Customers;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+
+    headers = ["ID", "Name"]
+    return render_template("customers.j2", headers=headers, data=results) 
+
+@app.route("/locations_browse", methods=["GET"])
+def locations_browse():
+    query = """
+        SELECT * FROM Locations;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+
+    headers = ["ID", "Aisle", "Shelf", "Slot", "Capacity"]
+    return render_template("locations.j2", headers=headers, data=results) 
+
+@app.route("/products_locations_browse", methods=["GET"])
+def products_locations_browse():
+    query = """
+        SELECT pl.productLocationId, p.name, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
+        FROM ProductsLocations AS pl
+        JOIN Products AS p
+        ON pl.productId = p.productId
+        JOIN Locations as l
+        ON pl.locationId = l.locationId;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+
+    headers = ["ID", "Product", "Location", "Quantity"]
+    return render_template("products_locations.j2", headers=headers, data=results) 
+
+########################################### INSERT ######################################
+@app.route("/sales_products_new", methods=["POST"])
+def sales_products_new():
+    if request.method == "POST":
+        data = request.form
+        name = data["name"]
+        saleId = data["saleId"]
+        quantity = int(data["quantity"])
+        params = (name, saleId, quantity, name, quantity)
+        query = """
+        INSERT INTO SalesProducts (productId, saleId, quantity, lineTotal) 
+        VALUES ((SELECT productId FROM Products WHERE name = %s), %s, %s, 
+        (SELECT unitPrice FROM Products WHERE name = %s) * %s);
+        """
+
+        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_products_browse")
     else:
-        return 'Invalid route'
+        return "Invalid route"
 
-# -------- Add routes for Products and then for Sales
-@app.route('/products_new', methods=['POST'])
-def product_new():
-    if request.method == 'POST':
-
-        if request.form.get('add_product'):
-
-            name = request.form['name']
-            categoryId = request.form['categoryId']
-            unitPrice = request.form['unitPrice']
-
-            query = 'INSERT INTO Products (categoryId, name, unitPrice) VALUES (%s, %s, %s);'
-            params = (categoryId, name, unitPrice)
-
-            cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
-
-            return jsonify({"message": "Insert to Products successful"}), 200
-
-@app.route('/sales_new', methods=['POST'])
-def sales_new():
-    if request.method == 'POST':
-
-        if request.form.get('add_sales'):
-
-            date = request.form['date']
-            customerId = request.form['customerId']
-
-            if customerId == "":
-                query = 'INSERT INTO Sales (date) VALUES (%s);'
-                cursor = db.execute_query(db_connection=db_connection, query=query, query_params = date)
-            else:
-                query = 'INSERT INTO Sales (date, customerId) VALUES (%s, %s);'
-                params = (date, customerId)
-                cursor = db.execute_query(db_connection=db_connection, query=query, query_params = params)
-            
-            return jsonify({"message": "Insert into Sales successful"}), 200
-    
+########################################### UPDATE ######################################
+@app.route("/sales_products_edit", methods=["POST"])
+def sales_products_edit():
+    print("here")
+    if request.method == "POST":
+        data = request.form
+        print(data)
+        saleProductId = data['saleProductId']
+        name = data['name']
+        saleId = data['saleId']
+        quantity = int(data['quantity'])
+        query = """
+        UPDATE SalesProducts 
+        SET SalesProducts.productId = (SELECT productId FROM Products WHERE name = %s), 
+        SalesProducts.saleId = %s, SalesProducts.quantity = %s, 
+        lineTotal = (SELECT unitPrice FROM Products WHERE name = %s) * %s WHERE SalesProducts.saleProductId = %s;
+        """
+        params = (name, saleId, quantity, name, quantity, saleProductId)
+        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_products_browse")
     else:
-        return 'Invalid route'
+        return "Invalid route"
 
-# Listener
+########################################### DELETE ######################################
+@app.route("/sales_products_delete", methods=["POST"])
+def sales_products_delete():
+    if request.method == "POST":
+        data = request.form
+        saleProductId = data["saleProductId"]
+        query = "DELETE FROM SalesProducts WHERE saleProductId = %s;"
+        params = (saleProductId,)
+        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_products_browse") 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 2739))
-    app.run(port=port, debug=True)
+    app.run(port=7641, debug=True)

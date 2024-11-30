@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>SalesProducts</h2>
+<button id="add-new">Add New SaleProduct</button>
 <h3>Browse SalesProduct</h3>
 <table>
 <thead>
@@ -42,7 +43,7 @@
 
 <div>
 
-<div id="insert">
+<div id="insert" style="display: none">
     <h3>Add Sale Product</h3>
     <form id="addSaleProduct" name="addSaleProduct" method="post" action="{{ url_for("sales_products_new") }}">
         <fieldset>
@@ -78,7 +79,7 @@
 </div>
 
 
-<div id="update">
+<div id="update" style="display: none">
     <h3>Update Sale Product</h3>
     <form id="updateSaleProduct" name="updateSaleProduct" method="post" action="{{ url_for("sales_products_edit") }}">
         <fieldset>
@@ -119,7 +120,7 @@
 </div>
 
 
-<div id="delete">
+<div id="delete" style="display: none">
     <h3>Delete Sale Product</h3>
     <form id="deleteSaleProduct" name="deleteSaleProduct" method="post" action="{{ url_for("sales_products_delete") }}">
         <fieldset>
@@ -164,6 +165,8 @@
             document.getElementById('update-name').value = name;
             document.getElementById('update-saleId').value = saleId;
             document.getElementById('update-quantity').value = quantity;
+
+            toggleDisplay("edit");
         });
     });
 
@@ -179,6 +182,8 @@
             document.getElementById('delete-name').innerText = name;
             document.getElementById('delete-saleId').innerText = saleId;
             document.getElementById('delete-quantity').innerText = quantity;
+
+            toggleDisplay("delete")
         });
     });
 
@@ -196,6 +201,33 @@
         document.getElementById('delete-saleId').innerText = "";
         document.getElementById('delete-quantity').innerText = ""; 
     });
+
+    const addNewButton = document.getElementById("add-new")
+    addNewButton.addEventListener("click", (event) => {
+        //const addForm = document.getElementById("insert")
+        toggleDisplay("add")
+    })
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
  
 </script>
 {% endblock %}

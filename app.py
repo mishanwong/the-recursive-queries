@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect # type: ignore
+from flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
 from flask_cors import CORS
 import database.db as db
 from datetime import datetime
@@ -143,10 +143,8 @@ def sales_products_new():
 ########################################### UPDATE ######################################
 @app.route("/sales_products_edit", methods=["POST"])
 def sales_products_edit():
-    print("here")
     if request.method == "POST":
         data = request.form
-        print(data)
         saleProductId = data['saleProductId']
         name = data['name']
         saleId = data['saleId']
@@ -159,7 +157,7 @@ def sales_products_edit():
         """
         params = (name, saleId, quantity, name, quantity, saleProductId)
         cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
-        return redirect("/sales_products_browse")
+        return redirect("/sales_products_browse#update")
     else:
         return "Invalid route"
 

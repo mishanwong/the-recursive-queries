@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Sales</h2>
+<button id="add-new">Add New Sale</button>
 <h3>Browse Sales</h3>
 <table>
 <thead>
@@ -21,23 +22,170 @@
     <td>
         <button 
             class="edit-btn" 
-            data-id="{{ row["saleProductId"] }}" 
-            data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}"
+            data-id="{{ row["saleId"] }}"
+            data-date="{{ row["date"] }}" 
+            data-customerName="{{ row["customerName"] }}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
-            data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}" 
+            data-id="{{ row["saleId"] }}"
+            data-date="{{ row["date"] }}" 
+            data-customerName="{{ row["customerName"] }}"
         >Delete</button>
         </td>
 </tr>
 {% endfor %}
 </table>
 
+<div>
+
+<div id="insert" style="display: none">
+    <h3>Add Sale</h3>
+    <form id="addSale" name="addSale" method="post" action="{{ url_for("sales_new") }}">
+        <fieldset>
+            <div>
+                <label>Date</label>
+                <input type="date" id="date" name="date" required/>
+            </div>
+            
+            <div>
+                <label>Customer</label>
+                <select name="customerId">
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer["customerId"] }}">ID: {{ customer["customerId"] }} | Name: {{ customer["name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Clear</button>
+    </form>
+</div>
+
+
+<div id="update" style="display: none">
+    <h3>Update Sale</h3>
+    <form id="updateSale" name="updateSale" method="post" action="{{ url_for("sales_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="saleId" />
+            </div>
+
+            <div>
+                <label>Date</label>
+                <input type="date" id="update-date" name="date" required />
+            </div>
+
+            <div>
+                <label>Customer: </label>
+                <select name="customerName" id="update-customerName" required>
+                    {% for customer in customers %}
+                    <option value="{{ customer["name"] }}">
+                        ID: {{ customer["customerId"] }} |
+                        Name: {{ customer["name"] }}
+                    </option> 
+                    {% endfor %}
+                    <option value="">None</option>
+                </select>
+            </div>
+        </fieldset>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+
+<div id="delete" style="display: none">
+    <h3>Delete Sale</h3>
+    <form id="deleteSale" name="deleteSale" method="post" action="{{ url_for("sales_delete") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label>
+                <span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="saleId" />
+            </div>
+
+            <div>
+                <label>Date: </label>
+                <span id="delete-date"></span>
+            </div>
+
+            <div>
+                <label>Customer: </label>
+                <span id="delete-customerName"> </span>
+            </div>
+        </fieldset>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const date = event.target.getAttribute("data-date");
+            const customerName = event.target.getAttribute("data-customerName");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById('update-date').value = date;
+            document.getElementById('update-customerName').value = customerName; 
+
+            toggleDisplay("edit");
+        });
+    });
+
+       document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const date = event.target.getAttribute("data-date");
+            const customerName = event.target.getAttribute("data-customerName");
+
+            document.getElementById("delete-id").value = id;
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById("delete-id").innerText = id;
+            document.getElementById('delete-date').innerText = date;
+            document.getElementById('delete-customerName').innerText = customerName; 
+            toggleDisplay("delete")
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addSale").reset()
+    });
+
+    const addNewButton = document.getElementById("add-new")
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    })
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
+ 
+</script>
 {% endblock %}
+{% endblock %}
+</div>

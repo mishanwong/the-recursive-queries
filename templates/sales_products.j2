@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>SalesProducts</h2>
+<button id="add-new">Add New SaleProduct</button>
 <h3>Browse SalesProduct</h3>
 <table>
 <thead>
@@ -22,18 +23,22 @@
         <button 
             class="edit-btn" 
             data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
+            data-productName="{{ row["productName"] }}"
             data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}"
+            data-date="{{ row["date"] }}"
+            data-customerName="{{ row["customerName"] }}"
+            data-quantity="{{ row["quantity"] }}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
             data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
+            data-productName="{{ row["productName"] }}"
             data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}" 
+            data-date="{{ row["date"] }}"
+            data-customerName="{{ row["customerName"] }}"
+            data-quantity="{{ row["quantity"] }}"
         >Delete</button>
         </td>
 </tr>
@@ -42,33 +47,33 @@
 
 <div>
 
-<div id="insert">
+<div id="insert" style="display: none">
     <h3>Add Sale Product</h3>
     <form id="addSaleProduct" name="addSaleProduct" method="post" action="{{ url_for("sales_products_new") }}">
         <fieldset>
             <div>
                 <label>Product</label>
-                <select name="name">
-                    <option disabled selected>-- select an option --</option>
+                <select name="name" required>
+                    <option value="" disabled selected>-- select an option --</option>
                     {% for product in products %}
-                    <option>{{ product["name"] }}</option>
+                    <option value="{{ product["name"] }}">{{ product["name"] }}</option>
                     {% endfor %}
                 </select>
             </div>
             
             <div>
                 <label>Sale ID</label>
-                <select name="saleId">
-                    <option disabled selected>-- select an option --</option>
-                    {% for id in saleIds %}
-                    <option>{{ id["saleId"] }}</option> 
+                <select name="saleId" required>
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for sale in sales %}
+                    <option value="{{ sale["saleId"] }}">SaleID: {{ sale["saleId"] }}, Date: {{ sale["date"] }}, Customer: {{ sale["name"] }}</option> 
                     {% endfor %}
                 </select>
             </div>
 
             <div>
                 <label>Quantity</label>
-                <input type="number" name="quantity" />
+                <input type="number" name="quantity" required  min="1"/>
             </div>
 
         </fieldset>
@@ -78,7 +83,7 @@
 </div>
 
 
-<div id="update">
+<div id="update" style="display: none">
     <h3>Update Sale Product</h3>
     <form id="updateSaleProduct" name="updateSaleProduct" method="post" action="{{ url_for("sales_products_edit") }}">
         <fieldset>
@@ -89,27 +94,31 @@
 
             <div>
                 <label>Product</label>
-                <select name="name" id="update-name">
-                    <option selected>-- select an option --</option>
+                <select name="productName" id="update-productName" required>
                     {% for product in products %}
-                    <option>{{ product["name"] }}</option>
+                    <option>{{ product["productName"] }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div>
-                <label>Sale ID</label>
-                <select name="saleId" id="update-saleId">
-                    <option disabled selected>-- select an option --</option>
-                    {% for id in saleIds %}
-                    <option>{{ id["saleId"] }}</option> 
+                <label>Sale</label>
+                <select name="saleId" id="update-saleId" required>
+                    {% for sale in sales %}
+                    <option value="{{ sale["saleId"] }}"
+                    >
+                        Sale ID: {{ sale["saleId"] }} |
+                        Date: {{ sale["date"] }} |
+                        Customer: {{ sale["customerName"] }}
+                
+                    </option> 
                     {% endfor %}
                 </select>
             </div>
             
             <div>
                 <label>Quantity</label>
-                <input type="number" name="quantity" id="update-quantity" />
+                <input type="number" name="quantity" id="update-quantity" min="1" required />
             </div>
 
         </fieldset>
@@ -119,7 +128,7 @@
 </div>
 
 
-<div id="delete">
+<div id="delete" style="display: none">
     <h3>Delete Sale Product</h3>
     <form id="deleteSaleProduct" name="deleteSaleProduct" method="post" action="{{ url_for("sales_products_delete") }}">
         <fieldset>
@@ -131,16 +140,15 @@
 
             <div>
                 <label>Product: </label>
-                <span id="delete-name"></span>
+                <span id="delete-productName"></span>
             </div>
 
             <div>
-                <label>Sale ID</label>
                 <span id="delete-saleId"> </span>
             </div>
             
             <div>
-                <label>Quantity</label>
+                <label>Quantity: </label>
                 <span id="delete-quantity"> </span>
             </div>
             
@@ -155,30 +163,38 @@
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute("data-id");
-            const name = event.target.getAttribute("data-name");
+            const productName = event.target.getAttribute("data-productName");
             const saleId = event.target.getAttribute("data-saleId");
+            const date = event.target.getAttribute("data-date");
+            const customerName = event.target.getAttribute("data-customerName");
             const quantity = event.target.getAttribute("data-quantity");
 
             document.getElementById("update-id-display").innerText = id;
             document.getElementById("update-id").value = id;
-            document.getElementById('update-name').value = name;
-            document.getElementById('update-saleId').value = saleId;
+            document.getElementById('update-productName').value = productName;
+            document.getElementById('update-saleId').value = saleId 
             document.getElementById('update-quantity').value = quantity;
+
+            toggleDisplay("edit");
         });
     });
 
        document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute("data-id");
-            const name = event.target.getAttribute("data-name");
+            const productName = event.target.getAttribute("data-productName");
             const saleId = event.target.getAttribute("data-saleId");
+            const date = event.target.getAttribute("data-date");
             const quantity = event.target.getAttribute("data-quantity");
+            const customerName = event.target.getAttribute("data-customerName");
 
             document.getElementById("delete-id-display").innerText = id;
             document.getElementById("delete-id").value = id;
-            document.getElementById('delete-name').innerText = name;
-            document.getElementById('delete-saleId').innerText = saleId;
+            document.getElementById('delete-productName').innerText = productName;
+            document.getElementById('delete-saleId').innerText = `Sale ID: ${saleId} | Date: ${date} | Customer: ${customerName}` ;
             document.getElementById('delete-quantity').innerText = quantity;
+
+            toggleDisplay("delete")
         });
     });
 
@@ -192,10 +208,36 @@
     document.getElementById("clearDeleteForm").addEventListener("click", () => {
         document.getElementById("deleteSaleProduct").reset()
         document.getElementById("delete-id-display").innerText = "";
-        document.getElementById('delete-name').innerText = "";
+        document.getElementById('delete-productName').innerText = "";
         document.getElementById('delete-saleId').innerText = "";
         document.getElementById('delete-quantity').innerText = ""; 
     });
+
+    const addNewButton = document.getElementById("add-new")
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    })
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
  
 </script>
 {% endblock %}

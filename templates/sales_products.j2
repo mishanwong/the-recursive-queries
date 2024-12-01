@@ -23,18 +23,22 @@
         <button 
             class="edit-btn" 
             data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
+            data-productName="{{ row["productName"] }}"
             data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}"
+            data-date="{{ row["date"] }}"
+            data-customerName="{{ row["customerName"] }}"
+            data-quantity="{{ row["quantity"] }}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
             data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
+            data-productName="{{ row["productName"] }}"
             data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}" 
+            data-date="{{ row["date"] }}"
+            data-customerName="{{ row["customerName"] }}"
+            data-quantity="{{ row["quantity"] }}"
         >Delete</button>
         </td>
 </tr>
@@ -49,27 +53,27 @@
         <fieldset>
             <div>
                 <label>Product</label>
-                <select name="name">
-                    <option disabled selected>-- select an option --</option>
+                <select name="name" required>
+                    <option value="" disabled selected>-- select an option --</option>
                     {% for product in products %}
-                    <option>{{ product["name"] }}</option>
+                    <option value="{{ product["name"] }}">{{ product["name"] }}</option>
                     {% endfor %}
                 </select>
             </div>
             
             <div>
                 <label>Sale ID</label>
-                <select name="saleId">
-                    <option disabled selected>-- select an option --</option>
-                    {% for id in saleIds %}
-                    <option>{{ id["saleId"] }}</option> 
+                <select name="saleId" required>
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for sale in sales %}
+                    <option value="{{ sale["saleId"] }}">SaleID: {{ sale["saleId"] }}, Date: {{ sale["date"] }}, Customer: {{ sale["name"] }}</option> 
                     {% endfor %}
                 </select>
             </div>
 
             <div>
                 <label>Quantity</label>
-                <input type="number" name="quantity" />
+                <input type="number" name="quantity" required  min="1"/>
             </div>
 
         </fieldset>
@@ -90,20 +94,26 @@
 
             <div>
                 <label>Product</label>
-                <select name="name" id="update-name">
-                    <option selected>-- select an option --</option>
+                <select name="productName" id="update-productName" required>
                     {% for product in products %}
-                    <option>{{ product["name"] }}</option>
+                    <option>{{ product["productName"] }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div>
-                <label>Sale ID</label>
+                <label>Sale</label>
                 <select name="saleId" id="update-saleId">
-                    <option disabled selected>-- select an option --</option>
-                    {% for id in saleIds %}
-                    <option>{{ id["saleId"] }}</option> 
+                    {% for sale in sales %}
+
+                    <option value="{{ sale["saleId"] }}"
+                    {% if sale["saleId"] == value %} selected {% endif %}
+                    >
+                        Sale ID: {{ sale["saleId"] }} |
+                        Date: {{ sale["date"] }} |
+                        Customer: {{ sale["customerName"] }}
+                
+                    </option> 
                     {% endfor %}
                 </select>
             </div>
@@ -156,14 +166,16 @@
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute("data-id");
-            const name = event.target.getAttribute("data-name");
+            const productName = event.target.getAttribute("data-productName");
             const saleId = event.target.getAttribute("data-saleId");
+            const date = event.target.getAttribute("data-date");
+            const customerName = event.target.getAttribute("data-customerName");
             const quantity = event.target.getAttribute("data-quantity");
 
             document.getElementById("update-id-display").innerText = id;
             document.getElementById("update-id").value = id;
-            document.getElementById('update-name').value = name;
-            document.getElementById('update-saleId').value = saleId;
+            document.getElementById('update-productName').value = productName;
+            document.getElementById('update-saleId').value = saleId 
             document.getElementById('update-quantity').value = quantity;
 
             toggleDisplay("edit");

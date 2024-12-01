@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Products</h2>
+<button id="add-new">Add New Product</button>
 <h3>Browse Products</h3>
 <table>
 <thead>
@@ -21,23 +22,183 @@
     <td>
         <button 
             class="edit-btn" 
-            data-id="{{ row["saleProductId"] }}" 
-            data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}"
+            data-id="{{ row["productId"] }}" 
+            data-category="{{ row["categoryName"] }}"
+            data-productName="{{ row["productName"] }}"
+            data-unitPrice="{{ row["unitPrice" ]}}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
-            data-id="{{ row["saleProductId"] }}"
-            data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}" 
+            data-id="{{ row["productId"] }}" 
+            data-category="{{ row["categoryName"] }}"
+            data-productName="{{ row["productName"] }}"
+            data-unitPrice="{{ row["unitPrice" ]}}"
         >Delete</button>
         </td>
 </tr>
 {% endfor %}
 </table>
 
+<div>
+
+<div id="insert" style="display: none">
+    <h3>Add Product</h3>
+    <form id="addProduct" name="addProduct" method="post" action="{{ url_for("products_new") }}">
+        <fieldset>
+            <div>
+                <label>Category</label>
+                <select name="category" required>
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for category in categories %}
+                    <option value="{{ category["name"] }}">{{ category["name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label>Product Name</label>
+                <input type="text" required name="productName"/>
+            </div>
+
+            <div>
+                <label>Unit Price</label>
+                <input type="number" min="0" step="0.01" required name="unitPrice"/>
+            </div>
+
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Clear</button>
+    </form>
+</div>
+
+
+<div id="update" style="display: none">
+    <h3>Update Product</h3>
+    <form id="updateProduct" name="updateProduct" method="post" action="{{ url_for("products_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="productId" />
+            </div>
+
+            <div>
+                <label>Category</label>
+                <select name="category" required id="update-category">
+                    {% for category in categories %}
+                    <option value="{{ category["name"] }}">{{ category["name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Product Name</label>
+                <input type="text" name="productName" id="update-productName" />
+            
+            <div>
+                <label>Unit Price</label>
+                <input type="number" required min="0.01" step="0.01" name="unitPrice" id="update-unitPrice"/>
+        </fieldset>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+
+<div id="delete" style="display: none">
+    <h3>Delete Product</h3>
+    <form id="deleteProduct" name="deleteProduct" method="post" action="{{ url_for("products_delete") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label>
+                <span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="productId" />
+            </div>
+
+            <div>
+                <label>Category: </label>
+                <span id="delete-category"></span>
+            </div>
+
+            <div>
+                <label>Name: </label>
+                <span id="delete-productName"> </span>
+            </div>
+            <div>
+                <label>Unit Price: </label>
+                <span id="delete-unitPrice"> </span>
+            </div>
+        </fieldset>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const category = event.target.getAttribute("data-category");
+            const productName = event.target.getAttribute("data-productName");
+            const unitPrice = event.target.getAttribute("data-unitPrice");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById('update-category').value = category;
+            document.getElementById('update-productName').value = productName; 
+            document.getElementById('update-unitPrice').value = unitPrice; 
+
+            toggleDisplay("edit");
+        });
+    });
+
+       document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const category = event.target.getAttribute("data-category");
+            const productName = event.target.getAttribute("data-productName");
+            const unitPrice = event.target.getAttribute("data-unitPrice");
+
+            document.getElementById("delete-id").value = id;
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById('delete-category').innerText = category;
+            document.getElementById('delete-productName').innerText = productName; 
+            document.getElementById("delete-unitPrice").innerText = unitPrice
+            toggleDisplay("delete")
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addProduct").reset()
+    });
+
+    const addNewButton = document.getElementById("add-new")
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    })
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
+ 
+</script>
 {% endblock %}
+{% endblock %}
+</div>

@@ -124,15 +124,66 @@ def products_browse():
     """
     cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()
+
+    query2 = "SELECT * FROM Categories;"
+    cur2 = db.execute_query(db_connection=db_connection, query=query2)
+    categories = cur2.fetchall()
+
     headers = ["ID", "Category", "Name", "Unit Price"]
-    return render_template("products.j2", data=results, headers=headers) 
+    return render_template("products.j2", data=results, headers=headers, categories=categories) 
 
 # ------- INSERT ------- 
+@app.route("/products", methods=["POST"])
+def products_new():
+    if request.method == "POST":
+        data = request.form
+        category = data["category"]
+        productName = data["productName"]
+        unitPrice = data["unitPrice"]
+        params = (category, productName, unitPrice)
+        query = """
+        INSERT INTO Products (categoryId, name, unitPrice) 
+        VALUES ((SELECT categoryId FROM Categories WHERE name = %s), %s, %s)
+        """
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_browse")
+    else:
+        return "Invalid route"
+    
 
 # ------- UPDATE ------- 
-
+@app.route("/products_edit", methods=["POST"])
+def products_edit():
+    if request.method == "POST":
+        data = request.form
+        productId = data["productId"]
+        category = data["category"]
+        productName = data['productName']
+        unitPrice = data['unitPrice']
+        query = """
+        UPDATE Products 
+        SET Products.categoryId = (SELECT categoryId from Categories WHERE name = %s), 
+        Products.name = %s,
+        Products.unitPrice = %s 
+        WHERE Products.productId = %s
+        """
+        params = (category, productName, unitPrice, productId)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_browse")
+    else:
+        return "Invalid route"
+    
 # ------- DELETE ------- 
-
+@app.route("/products_delete", methods=["POST"])
+def products_delete():
+    if request.method == "POST":
+        data = request.form
+        productId = data["productId"]
+        query = "DELETE FROM Products WHERE Products.productId = %s;"
+        params = (productId,)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_browse")
+    
 ########################################### SALES ######################################
 
 # ------- SELECT ------- 
@@ -200,7 +251,6 @@ def sales_delete():
     if request.method == "POST":
         data = request.form
         saleId = data["saleId"]
-        print("sale Id", data, saleId)
         query = "DELETE FROM Sales WHERE Sales.saleId = %s;"
         params = (saleId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)

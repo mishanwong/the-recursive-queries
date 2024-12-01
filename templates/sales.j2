@@ -62,7 +62,7 @@
 
         </fieldset>
         <button type="submit">Add</button>
-        <button type="button" id="clearAddForm">Cancel</button>
+        <button type="button" id="clearAddForm">Clear</button>
     </form>
 </div>
 
@@ -94,7 +94,6 @@
             </div>
         </fieldset>
         <button type="submit">Update</button>
-        <button type="button" id="clearUpdateForm">Cancel</button>
     </form>
 </div>
 
@@ -120,7 +119,6 @@
             </div>
         </fieldset>
         <button type="submit">Delete</button>
-        <button type="button" id="clearDeleteForm">Cancel</button>
     </form>
 </div>
 
@@ -157,18 +155,7 @@
     });
 
     document.getElementById("clearAddForm").addEventListener("click", () => {
-        document.getElementById("addSaleProduct").reset()
-    });
-    document.getElementById("clearUpdateForm").addEventListener("click", () => {
-        document.getElementById("updateSaleProduct").reset()
-        document.getElementById("update-id-display").innerText = "";
-    });
-    document.getElementById("clearDeleteForm").addEventListener("click", () => {
-        document.getElementById("deleteSaleProduct").reset()
-        document.getElementById("delete-id-display").innerText = "";
-        document.getElementById('delete-productName').innerText = "";
-        document.getElementById('delete-saleId').innerText = "";
-        document.getElementById('delete-quantity').innerText = ""; 
+        document.getElementById("addSale").reset()
     });
 
     const addNewButton = document.getElementById("add-new")

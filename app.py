@@ -190,8 +190,8 @@ def products_delete():
 @app.route("/sales_browse", methods=["GET"])
 def sales_browse():
     query = """
-    SELECT s.saleId, s.date, c.name AS customerName FROM Sales AS s
-    JOIN Customers AS c
+    SELECT s.saleId, s.date, COALESCE(c.name, "") AS customerName FROM Sales AS s
+    LEFT JOIN Customers AS c
     ON s.customerId = c.customerId;
     """
     cursor = db.execute_query(db_connection=db_connection, query=query)
@@ -212,7 +212,7 @@ def sales_new():
     if request.method == "POST":
         data = request.form
         date = data["date"]
-        customerId = data["customerId"]
+        customerId = data.get("customerId") 
         params = (date, customerId)
         query = """
         INSERT INTO Sales (date, customerId)
@@ -325,7 +325,7 @@ def customers_edit():
 def customers_delete():
     if request.method == "POST":
         data = request.form
-        customerId = data["customerId"]
+        customerId = data["customerId"] 
         query = "DELETE FROM Customers WHERE Customers.customerId = %s;"
         params = (customerId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)

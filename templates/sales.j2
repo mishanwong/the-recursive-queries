@@ -52,7 +52,7 @@
             
             <div>
                 <label>Customer</label>
-                <select name="customerId" required>
+                <select name="customerId">
                     <option value="" disabled selected>-- select an option --</option>
                     {% for customer in customers %}
                     <option value="{{ customer["customerId"] }}">ID: {{ customer["customerId"] }} | Name: {{ customer["name"] }}</option>
@@ -90,6 +90,7 @@
                         Name: {{ customer["name"] }}
                     </option> 
                     {% endfor %}
+                    <option value="">None</option>
                 </select>
             </div>
         </fieldset>

@@ -257,18 +257,6 @@ def sales_delete():
         return redirect("/sales_browse")
     
 
-########################################### CATEGORIES ######################################
-# ------- SELECT ------- 
-@app.route("/categories_browse", methods=["GET"])
-def categories_browse():
-    query = """
-        SELECT * FROM Categories;
-    """
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    results = cursor.fetchall()
-
-    headers = ["ID", "Categories"]
-    return render_template("categories.j2", headers=headers, data=results) 
 
     
 ########################################### CUSTOMERS ######################################
@@ -331,6 +319,27 @@ def customers_delete():
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/customers_browse")
     
+
+########################################### CATEGORIES ######################################
+# ------- SELECT ------- 
+@app.route("/categories_browse", methods=["GET"])
+def categories_browse():
+    query = """
+        SELECT * FROM Categories;
+    """
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+
+    headers = ["ID", "Categories"]
+    return render_template("categories.j2", headers=headers, data=results) 
+
+
+# ------- INSERT ------- 
+
+# ------- UPDATE ------- 
+
+# ------- DELETE ------- 
+
 ########################################### LOCATIONS ######################################
 # ------- SELECT ------- 
 @app.route("/locations_browse", methods=["GET"])

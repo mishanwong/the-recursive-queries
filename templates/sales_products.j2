@@ -103,11 +103,9 @@
 
             <div>
                 <label>Sale</label>
-                <select name="saleId" id="update-saleId">
+                <select name="saleId" id="update-saleId" required>
                     {% for sale in sales %}
-
                     <option value="{{ sale["saleId"] }}"
-                    {% if sale["saleId"] == value %} selected {% endif %}
                     >
                         Sale ID: {{ sale["saleId"] }} |
                         Date: {{ sale["date"] }} |
@@ -120,7 +118,7 @@
             
             <div>
                 <label>Quantity</label>
-                <input type="number" name="quantity" id="update-quantity" />
+                <input type="number" name="quantity" id="update-quantity" min="1" required />
             </div>
 
         </fieldset>

@@ -92,11 +92,12 @@ def sales_products_edit():
         UPDATE SalesProducts 
         SET SalesProducts.productId = (SELECT productId FROM Products WHERE name = %s), 
         SalesProducts.saleId = %s, SalesProducts.quantity = %s, 
-        lineTotal = (SELECT unitPrice FROM Products WHERE name = %s) * %s WHERE SalesProducts.saleProductId = %s;
+        lineTotal = (SELECT unitPrice FROM Products WHERE name = %s) * %s 
+        WHERE SalesProducts.saleProductId = %s;
         """
         params = (name, saleId, quantity, name, quantity, saleProductId)
-        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
-        return redirect("/sales_products_browse#update")
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_products_browse")
     else:
         return "Invalid route"
     
@@ -138,7 +139,7 @@ def products_browse():
 @app.route("/sales_browse", methods=["GET"])
 def sales_browse():
     query = """
-    SELECT s.saleId, s.date, c.name FROM Sales AS s
+    SELECT s.saleId, s.date, c.name AS customerName FROM Sales AS s
     JOIN Customers AS c
     ON s.customerId = c.customerId;
     """
@@ -147,14 +148,64 @@ def sales_browse():
     for result in results:
         result["date"] = datetime.strftime(result["date"], "%Y-%m-%d")
 
+    query2 = "SELECT * FROM Customers;"
+    cur2 = db.execute_query(db_connection=db_connection, query=query2)
+    customers = cur2.fetchall()
+
     headers = ["ID", "Date", "Customer"]
-    return render_template("sales.j2", headers=headers, data=results) 
+    return render_template("sales.j2", headers=headers, data=results, customers=customers) 
 
 # ------- INSERT ------- 
+@app.route("/sales_new", methods=["POST"])
+def sales_new():
+    if request.method == "POST":
+        data = request.form
+        date = data["date"]
+        customerId = data["customerId"]
+        params = (date, customerId)
+        query = """
+        INSERT INTO Sales (date, customerId)
+        VALUES (%s, %s)
+        """
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_browse")
+    else:
+        return "Invalid route"
+    
 
 # ------- UPDATE ------- 
-
+@app.route("/sales_edit", methods=["POST"])
+def sales_edit():
+    if request.method == "POST":
+        data = request.form
+        saleId = data["saleId"]
+        date = data['date']
+        customerName = data['customerName']
+        query = """
+        UPDATE Sales 
+        SET Sales.date = %s, 
+        Sales.customerId = (SELECT customerId FROM Customers where name = %s)
+        WHERE Sales.saleId = %s
+        """
+        params = (date, customerName, saleId)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_browse")
+    else:
+        return "Invalid route"
+    
 # ------- DELETE ------- 
+@app.route("/sales_delete", methods=["POST"])
+def sales_delete():
+    if request.method == "POST":
+        data = request.form
+        saleId = data["saleId"]
+        print("sale Id", data, saleId)
+        query = "DELETE FROM Sales WHERE Sales.saleId = %s;"
+        params = (saleId,)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/sales_browse")
+    
 
 ########################################### CATEGORIES ######################################
 # ------- SELECT ------- 

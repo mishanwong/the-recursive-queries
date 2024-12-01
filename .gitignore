@@ -31,3 +31,4 @@ yarn-error.log*
 /venv
 /database/__pycache__/db.cpython-312.pyc
 database/__pycache__/db.cpython-312.pyc
+/dev.txt

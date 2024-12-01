@@ -142,16 +142,15 @@
 
             <div>
                 <label>Product: </label>
-                <span id="delete-name"></span>
+                <span id="delete-productName"></span>
             </div>
 
             <div>
-                <label>Sale ID</label>
                 <span id="delete-saleId"> </span>
             </div>
             
             <div>
-                <label>Quantity</label>
+                <label>Quantity: </label>
                 <span id="delete-quantity"> </span>
             </div>
             
@@ -185,14 +184,16 @@
        document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute("data-id");
-            const name = event.target.getAttribute("data-name");
+            const productName = event.target.getAttribute("data-productName");
             const saleId = event.target.getAttribute("data-saleId");
+            const date = event.target.getAttribute("data-date");
             const quantity = event.target.getAttribute("data-quantity");
+            const customerName = event.target.getAttribute("data-customerName");
 
             document.getElementById("delete-id-display").innerText = id;
             document.getElementById("delete-id").value = id;
-            document.getElementById('delete-name').innerText = name;
-            document.getElementById('delete-saleId').innerText = saleId;
+            document.getElementById('delete-productName').innerText = productName;
+            document.getElementById('delete-saleId').innerText = `Sale ID: ${saleId} | Date: ${date} | Customer: ${customerName}` ;
             document.getElementById('delete-quantity').innerText = quantity;
 
             toggleDisplay("delete")
@@ -209,14 +210,13 @@
     document.getElementById("clearDeleteForm").addEventListener("click", () => {
         document.getElementById("deleteSaleProduct").reset()
         document.getElementById("delete-id-display").innerText = "";
-        document.getElementById('delete-name').innerText = "";
+        document.getElementById('delete-productName').innerText = "";
         document.getElementById('delete-saleId').innerText = "";
         document.getElementById('delete-quantity').innerText = ""; 
     });
 
     const addNewButton = document.getElementById("add-new")
     addNewButton.addEventListener("click", (event) => {
-        //const addForm = document.getElementById("insert")
         toggleDisplay("add")
     })
 

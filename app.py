@@ -270,12 +270,7 @@ def categories_browse():
     headers = ["ID", "Categories"]
     return render_template("categories.j2", headers=headers, data=results) 
 
-# ------- INSERT ------- 
-
-# ------- UPDATE ------- 
-
-# ------- DELETE ------- 
-
+    
 ########################################### CUSTOMERS ######################################
 # ------- SELECT ------- 
 @app.route("/customers_browse", methods=["GET"])
@@ -290,8 +285,52 @@ def customers_browse():
     return render_template("customers.j2", headers=headers, data=results) 
 
 # ------- INSERT ------- 
+@app.route("/customers_new", methods=["POST"])
+def customers_new():
+    if request.method == "POST":
+        data = request.form
+        name = data["name"]
+        params = (name, )
+        query = """
+        INSERT INTO Customers (name)
+        VALUES (%s)
+        """
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/customers_browse")
+    else:
+        return "Invalid route"
+    
+
 # ------- UPDATE ------- 
+@app.route("/customers_edit", methods=["POST"])
+def customers_edit():
+    if request.method == "POST":
+        data = request.form
+        customerId = data["customerId"]
+        name = data["name"]
+        query = """
+        UPDATE Customers 
+        SET Customers.name = %s 
+        WHERE Customers.customerId = %s
+        """
+        params = (name, customerId)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/customers_browse")
+    else:
+        return "Invalid route"
+    
 # ------- DELETE ------- 
+@app.route("/customers_delete", methods=["POST"])
+def customers_delete():
+    if request.method == "POST":
+        data = request.form
+        customerId = data["customerId"]
+        query = "DELETE FROM Customers WHERE Customers.customerId = %s;"
+        params = (customerId,)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/customers_browse")
+    
 ########################################### LOCATIONS ######################################
 # ------- SELECT ------- 
 @app.route("/locations_browse", methods=["GET"])

@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Customers</h2>
+<button id="add-new">Add New Customer</button>
 <h3>Browse Customers</h3>
 <table>
 <thead>
@@ -21,23 +22,133 @@
     <td>
         <button 
             class="edit-btn" 
-            data-id="{{ row["saleProductId"] }}" 
+            data-id="{{ row["customerId"] }}" 
             data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
-            data-id="{{ row["saleProductId"] }}"
+            data-id="{{ row["customerId"] }}"
             data-name="{{ row["name"] }}"
-            data-saleId="{{ row["saleId"] }}"
-            data-quantity="{{ row["quantity" ]}}" 
         >Delete</button>
         </td>
 </tr>
 {% endfor %}
 </table>
 
+<div>
+
+<div id="insert" style="display: none">
+    <h3>Add Customer</h3>
+    <form id="addCustomer" name="addCustomer" method="post" action="{{ url_for("customers_new") }}">
+        <fieldset>
+            <div>
+                <label>Name</label>
+                <input type="text" id="name" name="name" required/>
+            </div>
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Clear</button>
+    </form>
+</div>
+
+
+<div id="update" style="display: none">
+    <h3>Update Customer</h3>
+    <form id="updateCustomer" name="updateCustomer" method="post" action="{{ url_for("customers_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="customerId" />
+            </div>
+
+            <div>
+                <label>Name</label>
+                <input type="text" id="update-name" name="name" required />
+            </div>
+        </fieldset>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+
+<div id="delete" style="display: none">
+    <h3>Delete Customer</h3>
+    <form id="deleteCustomer" name="deleteCustomer" method="post" action="{{ url_for("customers_delete") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label>
+                <span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="customerId" />
+            </div>
+
+            <div>
+                <label>Name: </label>
+                <span id="delete-name"></span>
+            </div>
+        </fieldset>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const name = event.target.getAttribute("data-name");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById('update-name').value = name;
+
+            toggleDisplay("edit");
+        });
+    });
+
+       document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const name = event.target.getAttribute("data-name");
+
+            document.getElementById("delete-id").value = id;
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById('delete-name').innerText = name;
+            toggleDisplay("delete")
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addCustomer").reset()
+    });
+
+    const addNewButton = document.getElementById("add-new")
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    })
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
+ 
+</script>
 {% endblock %}
+{% endblock %}
+</div>

@@ -1,4 +1,4 @@
-rfrom flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
+from flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
 from flask_cors import CORS
 import database.db as db
 from datetime import datetime
@@ -52,7 +52,7 @@ def sales_products_browse():
         for sale in sales:
             sale["date"] = datetime.strftime(sale["date"], "%Y-%m-%d") 
 
-        headers = ["ID", "Product", "Sale ID", "Sale Date", "Customer", "Quantity", "Subtotal", "Action"]
+        headers = ["ID", "Product", "Sale ID", "Sale Date", "Customer", "Quantity", "Subtotal"]
         return render_template("sales_products.j2", data=results, products=products, sales=sales, headers=headers)
     except pymysql.DatabaseError as e:
         return jsonify(str(e)), 500

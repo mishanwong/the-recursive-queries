@@ -335,10 +335,50 @@ def categories_browse():
 
 
 # ------- INSERT ------- 
+@app.route("/categories_new", methods=["POST"])
+def categories_new():
+    if request.method == "POST":
+        data = request.form
+        name = data["name"]
+        params = (name, )
+        query = """
+        INSERT INTO Categories (name)
+        VALUES (%s);
+        """
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/categories_browse")
+    else:
+        return "Invalid route"
 
 # ------- UPDATE ------- 
+@app.route("/categories_edit", methods=["POST"])
+def categories_edit():
+    if request.method == "POST":
+        data = request.form
+        categoryId = data["categoryId"]
+        name = data["name"]
+        query = """
+        UPDATE Categories
+        SET Categories.name = %s
+        WHERE Categories.categoryId = %s;
+        """
+        params = (name, categoryId)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/categories_browse")
+    else:
+        return "Invalid route"
 
 # ------- DELETE ------- 
+@app.route("/categories_delete", methods=["POST"])
+def categories_delete():
+    if request.method == "POST":
+        data = request.form
+        categoryId = data["categoryId"]
+        query = "DELETE FROM Categories WHERE Categories.categoryId = %s;"
+        params = (categoryId,)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/categories_browse")
 
 ########################################### LOCATIONS ######################################
 # ------- SELECT ------- 

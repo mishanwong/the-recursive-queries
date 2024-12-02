@@ -10,19 +10,22 @@ passwd = os.environ.get("passwd")
 db = os.environ.get("db")
 port = int(os.environ.get("port"))
 
-db_connection = pymysql.connect(host=host, user=user, passwd=passwd, db=db, port=port)
 
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db, port = port):
-    global db_connection
     try:
-        db_connection.ping(reconnect=True)
-    except (pymysql.OperationalError, pymysql.MySQLError):
-        print("Reconnecting to the database...")
-        if db_connection:
-            db_connection.close()
-        db_connection = pymysql.connect(host = host, user = user, passwd = passwd, db = db, port = port)
-    return db_connection
+        db_connection = pymysql.connect(host=host, 
+                                        user=user, 
+                                        passwd=passwd, 
+                                        db=db, 
+                                        port=port)
+        return db_connection
+    except pymysql.OperationalError as e:
+        print(f"Operational Error: {e}") 
+        return None
+    except pymysql.MySQLError as e:
+        print(f"MySQLError: {e}")
+        return None
 
 def execute_query(db_connection = None, query = None, query_params = ()):
     if db_connection is None:
@@ -32,17 +35,14 @@ def execute_query(db_connection = None, query = None, query_params = ()):
     if query is None or len(query.strip()) == 0:
         print("query is empty! Please pass a SQL query in query")
         return None
+    try:
+        db_connection.ping(reconnect=True)
 
-    print("Executing %s with %s" % (query, query_params))
-    # cursor = db_connection.cursor(pymysql.cursors.DictCursor)
-    
-    # cursor.execute(query, query_params)
-    # db_connection.commit()
-    # return cursor
-    with db_connection.cursor(pymysql.cursors.DictCursor) as cursor:
-        cursor.execute(query, query_params)
-        db_connection.commit()
-        return cursor
-
-if __name__ == "__main__":
-    db = connect_to_database()
+        print("Executing %s with %s" % (query, query_params))
+        with db_connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(query, query_params)
+            db_connection.commit()
+            return cursor
+    except pymysql.MySQLError as e:
+        print(f"Query execution failed: {e}")
+        return None

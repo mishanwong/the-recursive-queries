@@ -1,3 +1,7 @@
+# Citation for following: db.py
+# Adapted from/based on cs340 github Flask starter guide
+# Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+
 import os
 from dotenv import load_dotenv
 import pymysql

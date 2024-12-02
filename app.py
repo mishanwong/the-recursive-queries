@@ -1,3 +1,7 @@
+# Citation for following: app.py
+# Adapted from/based on cs340 github Flask starter guide
+# Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
 from flask_cors import CORS
 import database.db as db

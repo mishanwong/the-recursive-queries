@@ -325,7 +325,7 @@ def customers_delete():
 @app.route("/categories_browse", methods=["GET"])
 def categories_browse():
     query = """
-        SELECT * FROM Categories;
+        SELECT * FROM Categories ORDER BY categoryId;
     """
     cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()

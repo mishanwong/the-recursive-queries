@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
+rfrom flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
 from flask_cors import CORS
 import database.db as db
 from datetime import datetime
@@ -107,9 +107,11 @@ def sales_products_delete():
     if request.method == "POST":
         data = request.form
         saleProductId = data["saleProductId"]
-        query = "DELETE FROM SalesProducts WHERE saleProductId = %s;"
+        query = """
+        DELETE FROM SalesProducts WHERE saleProductId = %s;
+        """
         params = (saleProductId,)
-        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/sales_products_browse")
 
 ########################################### PRODUCTS ######################################
@@ -179,7 +181,9 @@ def products_delete():
     if request.method == "POST":
         data = request.form
         productId = data["productId"]
-        query = "DELETE FROM Products WHERE Products.productId = %s;"
+        query = """
+        DELETE FROM Products WHERE Products.productId = %s;
+        """
         params = (productId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/products_browse")
@@ -251,7 +255,9 @@ def sales_delete():
     if request.method == "POST":
         data = request.form
         saleId = data["saleId"]
-        query = "DELETE FROM Sales WHERE Sales.saleId = %s;"
+        query = """
+        DELETE FROM Sales WHERE Sales.saleId = %s;
+        """
         params = (saleId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/sales_browse")
@@ -314,7 +320,9 @@ def customers_delete():
     if request.method == "POST":
         data = request.form
         customerId = data["customerId"] 
-        query = "DELETE FROM Customers WHERE Customers.customerId = %s;"
+        query = """
+        DELETE FROM Customers WHERE Customers.customerId = %s;
+        """
         params = (customerId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/customers_browse")
@@ -444,7 +452,9 @@ def locations_delete():
     if request.method == "POST":
         data = request.form
         locationId = data["locationId"]
-        query = "DELETE FROM Locations WHERE Locations.locationId = %s;"
+        query = """
+        DELETE FROM Locations WHERE Locations.locationId = %s;
+        """
         params = (locationId,)
 
         db.execute_query(db_connection=db_connection, query=query, query_params=params)

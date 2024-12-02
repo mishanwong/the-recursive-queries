@@ -394,10 +394,61 @@ def locations_browse():
     return render_template("locations.j2", headers=headers, data=results) 
 
 # ------- INSERT ------- 
+@app.route("/locations_new", methods=["POST"])
+def locations_new():
+    if request.method == "POST":
+        data = request.form
+        aisle = data["aisle"]
+        shelf = data["shelf"]
+        slot = data["slot"]
+        capacity = data["capacity"]
+        params = (aisle, shelf, slot, capacity)
+        query = """
+        INSERT INTO Locations (aisle, shelf, slot, capacity)
+        VALUES (%s, %s, %s, %s);
+        """
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/locations_browse")
+    else:
+        return "Invalid route"
 
 # ------- UPDATE ------- 
+@app.route("/locations_edit", methods=["POST"])
+def locations_edit():
+    if request.method == "POST":
+        data = request.form
+        aisle = data["aisle"]
+        shelf = data["shelf"]
+        slot = data["slot"]
+        capacity = data["capacity"]
+        locationId = data["locationId"]
+        params = (aisle, shelf, slot, capacity, locationId)
+        query = """
+        UPDATE Locations
+        SET Locations.aisle = %s,
+        Locations.shelf = %s,
+        Locations.slot = %s,
+        Locations.capacity = %s
+        WHERE Locations.locationId = %s;
+        """
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/locations_browse")
+    else:
+        return "Invalid route"
 
 # ------- DELETE ------- 
+@app.route("/locations_delete", methods=["POST"])
+def locations_delete():
+    if request.method == "POST":
+        data = request.form
+        locationId = data["locationId"]
+        query = "DELETE FROM Locations WHERE Locations.locationId = %s;"
+        params = (locationId,)
+
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/locations_browse")
 
 ########################################### PRODUCTS LOCATIONS ######################################
 # ------- SELECT ------- 

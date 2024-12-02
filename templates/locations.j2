@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Locations</h2>
+<button id="add-new">Add New Location</button>
 <h3>Browse Locations</h3>
 <table>
 <thead>
@@ -20,16 +21,195 @@
     {% endfor %}
     <td>
         <button 
-            class="edit-btn" 
+            class="edit-btn"
+            data-id="{{ row["locationId"] }}"
+            data-aisle="{{ row["aisle"] }}"
+            data-shelf="{{ row["shelf"] }}"
+            data-slot="{{ row["slot"] }}"
+            data-capacity="{{ row["capacity"] }}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
+            data-id="{{ row["locationId"] }}"
+            data-aisle="{{ row["aisle"] }}"
+            data-shelf="{{ row["shelf"] }}"
+            data-slot="{{ row["slot"] }}"
+            data-capacity="{{ row["capacity"] }}"
         >Delete</button>
         </td>
 </tr>
 {% endfor %}
 </table>
 
+<div>
+
+
+<div id="insert" style="display: none">
+    <h3>Add Location</h3>
+    <form id="addLocation" name="addLocation" method="post" action="{{ url_for("locations_new") }}">
+        <fieldset>
+            <div>
+                <label>Aisle</label>
+                <input type="text" id="aisle" name="aisle" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Shelf</label>
+                <input type="text" id="shelf" name="shelf" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Slot</label>
+                <input type="text" id="slot" name="slot" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Capacity</label>
+                <input type="number" id="capacity" name="capacity" required min="1" />
+            </div>
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Clear</button>
+    </form>
+</div>
+
+
+<div id="update" style="display: none">
+    <h3>Update Location</h3>
+    <form id="updateLocation" name="updateLocation" method="post" action="{{ url_for("locations_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="locationId" />
+            </div>
+
+            <div>
+                <label>Aisle</label>
+                <input type="text" id="update-aisle" name="aisle" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Shelf</label>
+                <input type="text" id="update-shelf" name="shelf" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Slot</label>
+                <input type="text" id="update-slot" name="slot" maxlength="2" required />
+            </div>
+
+            <div>
+                <label>Capacity</label>
+                <input type="number" id="update-capacity" name="capacity" required min="1" />
+            </div>
+        </fieldset>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+
+<div id="delete" style="display: none">
+    <h3>Delete Location</h3>
+    <form id="deleteLocation" name="deleteLocation" method="post" action="{{ url_for("locations_delete") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="locationId" />
+            </div>
+
+            <div>
+                <label>Aisle: </label><span id="delete-aisle"> </span>
+            </div>
+
+            <div>
+                <label>Shelf: </label><span id="delete-shelf"> </span>
+            </div>
+
+            <div>
+                <label>Slot: </label><span id="delete-slot"> </span>
+            </div>
+
+            <div>
+                <label>Capacity: </label><span id="delete-capacity"> </span>
+            </div>
+        </fieldset>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const aisle = event.target.getAttribute("data-aisle");
+            const shelf = event.target.getAttribute("data-shelf");
+            const slot = event.target.getAttribute("data-slot");
+            const capacity = event.target.getAttribute("data-capacity");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById("update-aisle").value = aisle;
+            document.getElementById("update-shelf").value = shelf;
+            document.getElementById("update-slot").value = slot;
+            document.getElementById("update-capacity").value = capacity;
+
+            toggleDisplay("edit");
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const aisle = event.target.getAttribute("data-aisle");
+            const shelf = event.target.getAttribute("data-shelf");
+            const slot = event.target.getAttribute("data-slot");
+            const capacity = event.target.getAttribute("data-capacity");
+
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById("delete-id").value = id;
+            document.getElementById("delete-aisle").innerText = aisle;
+            document.getElementById("delete-shelf").innerText = shelf;
+            document.getElementById("delete-slot").innerText = slot;
+            document.getElementById("delete-capacity").innerText = capacity;
+
+            toggleDisplay("delete")
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addLocation").reset()
+    });
+
+    const addNewButton = document.getElementById("add-new");
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    });
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    }
+
+</script>
 {% endblock %}
+{% endblock %}
+</div>

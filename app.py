@@ -46,7 +46,7 @@ def sales_products_browse():
         query3 = """
             SELECT s.saleId, s.date, c.name AS customerName
             FROM Sales AS s
-            JOIN Customers AS c
+            LEFT JOIN Customers AS c
             ON s.customerId = c.customerId
             ORDER BY saleId ASC;
             """

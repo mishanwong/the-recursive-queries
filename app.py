@@ -470,7 +470,7 @@ def locations_delete():
 def products_locations_browse():
     try:
         query = """
-            SELECT pl.productLocationId, p.name, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
+            SELECT pl.productLocationId, p.name AS productName, l.locationId, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
             FROM ProductsLocations AS pl
             JOIN Products AS p
             ON pl.productId = p.productId
@@ -492,7 +492,7 @@ def products_locations_browse():
         cur3 = db.execute_query(db_connection=db_connection, query=query3)
         locations = cur3.fetchall()
 
-        headers = ["ID", "Product", "Location", "Quantity"]
+        headers = ["ID", "Product", "Location ID", "Location", "Quantity"]
         return render_template("products_locations.j2", headers=headers, data=results, products=products, locations=locations)
     except pymysql.DatabaseError as e:
         return jsonify(str(e)), 500

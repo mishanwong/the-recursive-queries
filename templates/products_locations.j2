@@ -25,6 +25,7 @@
             data-id="{{ row["productLocationId"]}}"
             data-productName="{{ row["productName"]}}"
             data-locationId="{{ row["locationId"]}}"
+            data-location="{{ row["location"]}}"
             data-aisle="{{ row["aisle"]}}"
             data-shelf="{{ row["shelf"]}}"
             data-slot="{{ row["slot"]}}"
@@ -37,6 +38,7 @@
             data-id="{{ row["productLocationId"]}}"
             data-productName="{{ row["productName"]}}"
             data-locationId="{{ row["locationId"]}}"
+            data-location="{{ row["location"]}}"
             data-aisle="{{ row["aisle"]}}"
             data-shelf="{{ row["shelf"]}}"
             data-slot="{{ row["slot"]}}"
@@ -79,7 +81,7 @@
             </div>
         </fieldset>
         <button type="submit">Add</button>
-        <button type="button" id="clearAddForm">Cancel</button>
+        <button type="button" id="clearAddForm">Clear</button>
     </form>
 </div>
 
@@ -143,7 +145,7 @@
 
             <div>
                 <label>Location: </label>
-                <span id="delete-locationId"> </span>
+                <span id="delete-location"> </span>
             </div>
 
             <div>
@@ -163,6 +165,7 @@
             const id = event.target.getAttribute("data-id");
             const productName = event.target.getAttribute("data-productName");
             const locationId = event.target.getAttribute("data-locationId");
+            const location = event.target.getAttribute("data-location");
             const aisle = event.target.getAttribute("data-aisle");
             const shelf = event.target.getAttribute("data-shelf");
             const slot = event.target.getAttribute("data-slot");
@@ -183,6 +186,7 @@
             const id = event.target.getAttribute("data-id");
             const productName = event.target.getAttribute("data-productName");
             const locationId = event.target.getAttribute("data-locationId");
+            const location = event.target.getAttribute("data-location");
             const aisle = event.target.getAttribute("data-aisle");
             const shelf = event.target.getAttribute("data-shelf");
             const slot = event.target.getAttribute("data-slot");
@@ -191,7 +195,7 @@
             document.getElementById("delete-id-display").innerText = id;
             document.getElementById("delete-id").value = id;
             document.getElementById("delete-productName").innerText = productName;
-            document.getElementById("delete-locationId").innerText = locationId;
+            document.getElementById("delete-location").innerText = location;
             document.getElementById("delete-quantity").innerText = quantity;
 
             toggleDisplay("delete");
@@ -205,14 +209,17 @@
     document.getElementById("clearUpdateForm").addEventListener("click", () => {
         document.getElementById("updateProductLocation").reset();
         document.getElementById("update-id-display").innerText = "";
+        toggleDisplay("none");
     });
 
     document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        toggleDisplay("none");
         document.getElementById("deleteProductLocation").reset();
         document.getElementById("delete-id-display").innerText = "";
         document.getElementById("delete-productName").innerText = "";
         document.getElementById("delete-locationId").innerText = "";
         document.getElementById("delete-quantity").innerText = "";
+        
     });
 
     const addNewButton = document.getElementById("add-new");
@@ -237,6 +244,10 @@
             addForm.style.display = "none";
             editForm.style.display = "none";
             deleteForm.style.display = "block";
+        } else if (form === "none") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
         }
 
     };

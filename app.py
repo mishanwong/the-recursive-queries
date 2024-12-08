@@ -468,25 +468,92 @@ def locations_delete():
 # ------- SELECT ------- 
 @app.route("/products_locations_browse", methods=["GET"])
 def products_locations_browse():
-    query = """
-        SELECT pl.productLocationId, p.name, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
-        FROM ProductsLocations AS pl
-        JOIN Products AS p
-        ON pl.productId = p.productId
-        JOIN Locations as l
-        ON pl.locationId = l.locationId;
-    """
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    results = cursor.fetchall()
+    try:
+        query = """
+            SELECT pl.productLocationId, p.name, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
+            FROM ProductsLocations AS pl
+            JOIN Products AS p
+            ON pl.productId = p.productId
+            JOIN Locations as l
+            ON pl.locationId = l.locationId
+            ORDER BY pl.productLocationId;
+        """
+        cursor = db.execute_query(db_connection=db_connection, query=query)
+        results = cursor.fetchall()
 
-    headers = ["ID", "Product", "Location", "Quantity"]
-    return render_template("products_locations.j2", headers=headers, data=results) 
+        query2 = "SELECT name AS productName FROM Products;"
+        cur2 = db.execute_query(db_connection=db_connection, query=query2)
+        products = cur2.fetchall()
+
+        query3 = """
+            SELECT l.locationId, l.aisle, l.shelf, l.slot, l.capacity
+            FROM Locations AS l;
+            """
+        cur3 = db.execute_query(db_connection=db_connection, query=query3)
+        locations = cur3.fetchall()
+
+        headers = ["ID", "Product", "Location", "Quantity"]
+        return render_template("products_locations.j2", headers=headers, data=results, products=products, locations=locations)
+    except pymysql.DatabaseError as e:
+        return jsonify(str(e)), 500
+    except Exception as e:
+        return jsonify(str(e)), 500
 
 # ------- INSERT ------- 
+@app.route("/products_locations_new", methods=["POST"])
+def products_locations_new():
+    if request.method == "POST":
+        data = request.form
+        name = data["name"]
+        locationId = data["locationId"]
+        quantity = int(data["quantity"])
+
+        query = """
+            INSERT INTO ProductsLocations (productId, locationId, quantity)
+            VALUES ((SELECT productId FROM Products WHERE name = %s), %s, %s);
+            """
+        params = (name, locationId, quantity)
+
+        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_locations_browse")
+    else:
+        return "Invalid route"
 
 # ------- UPDATE ------- 
+@app.route("/products_locations_edit", methods=["POST"])
+def products_locations_edit():
+    if request.method == "POST":
+        data = request.form
+        productLocationId = data["productLocationId"]
+        name = data["productName"]
+        locationId = data["locationId"]
+        quantity = int(data["quantity"])
+
+        query = """
+            UPDATE ProductsLocations
+            SET ProductsLocations.productId = (SELECT productId FROM Products WHERE Products.name = %s),
+            ProductsLocations.locationId = %s, ProductsLocations.quantity = %s
+            WHERE ProductsLocations.productLocationId = %s;
+            """
+        params = (name, locationId, quantity, productLocationId)
+        cursor = cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_locations_browse")
+    else:
+        return "Invalid route"
 
 # ------- DELETE ------- 
+@app.route("/products_locations_delete", methods=["POST"])
+def products_locations_delete():
+    if request.method == "POST":
+        data = request.form
+        productLocationId = data["productLocationId"]
+        
+        query = "DELETE FROM ProductsLocations WHERE productLocationId = %s"
+        params = (productLocationId,)
+        db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        return redirect("/products_locations_browse")
+    else:
+        return "Invalid route"
 
 if __name__ == "__main__":
     app.run(debug=True)

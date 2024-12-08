@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>ProductsLocations</h2>
+<button id="add-new">Add New ProductLocation</button>
 <h3>Browse ProductsLocations</h3>
 <table>
 <thead>
@@ -21,15 +22,229 @@
     <td>
         <button 
             class="edit-btn" 
+            data-id="{{ row["productLocationId"]}}"
+            data-productName="{{ row["productName"]}}"
+            data-locationId="{{ row["locationId"]}}"
+            data-aisle="{{ row["aisle"]}}"
+            data-shelf="{{ row["shelf"]}}"
+            data-slot="{{ row["slot"]}}"
+            data-quantity="{{ row["quantity"]}}"
         >Edit</button>
     </td>
     <td>
         <button 
             class="delete-btn"
+            data-id="{{ row["productLocationId"]}}"
+            data-productName="{{ row["productName"]}}"
+            data-locationId="{{ row["locationId"]}}"
+            data-aisle="{{ row["aisle"]}}"
+            data-shelf="{{ row["shelf"]}}"
+            data-slot="{{ row["slot"]}}"
+            data-quantity="{{ row["quantity"]}}"
         >Delete</button>
         </td>
 </tr>
 {% endfor %}
 </table>
 
+<div>
+
+<div id="insert" style="display: none">
+    <h3>Add Product Location</h3>
+    <form id="addProductLocation" name="addProductLocation" method="post" action="{{ url_for("products_locations_new")}}">
+        <fieldset>
+            <div>
+                <label>Product</label>
+                <select name="name" required>
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for product in products %}
+                    <option value="{{ product["productName"]}}">{{ product["productName"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Location ID</label>
+                <select name="locationId" required>
+                    <option value="" disabled selected>-- select an option --</option>
+                    {% for location in locations %}
+                    <option value="{{ location["locationId"] }}">Location ID: {{ location["locationId"] }}, Aisle-Shelf-Slot: {{ location["aisle"] }}-{{ location["shelf"] }}-{{ location["slot"] }}, Capacity: {{ location["capacity"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Quantity</label>
+                <input type="number" name="quantity" required min="1" />
+            </div>
+        </fieldset>
+        <button type="submit">Add</button>
+        <button type="button" id="clearAddForm">Cancel</button>
+    </form>
+</div>
+
+
+<div id="update" style="display: none">
+    <h3>Update Product Location</h3>
+    <form id="updateProductLocation" name="updateProductLocation" method="post" action="{{ url_for("products_locations_edit") }}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="update-id-display"> </span>
+                <input type="hidden" id="update-id" name="productLocationId" />
+            </div>
+
+            <div>
+                <label>Product</label>
+                <select name="productName" id="update-productName" required>
+                    {% for product in products %}
+                    <option>{{ product["productName"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Location</label>
+                <select name="locationId" id="update-locationId" required>
+                    {% for location in locations %}
+                    <option value="{{ location["locationId"]}}">
+                    Location ID: {{ location["locationId"]}} |
+                    Aisle-Shelf-Slot: {{ location["aisle"] }}-{{ location["shelf"] }}-{{ location["slot"] }} |
+                    Capacity: {{ location["capacity"]}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Quantity</label>
+                <input type="number" name="quantity" id="update-quantity" min="1" required />
+            </div>
+
+        </fieldset>
+        <button type="submit">Update</button>
+        <button type="button" id="clearUpdateForm">Cancel</button>
+    </form>
+</div>
+
+
+<div id="delete" style="display: none">
+    <h3>Delete Product Location</h3>
+    <form id="deleteProductLocation" name="deleteProductLocation" method="post" action="{{ url_for("products_locations_delete")}}">
+        <fieldset>
+            <div>
+                <label>ID: </label><span id="delete-id-display"> </span>
+                <input type="hidden" id="delete-id" name="productLocationId" />
+            </div>
+
+            <div>
+                <label>Product: </label>
+                <span id="delete-productName"> </span>
+            </div>
+
+            <div>
+                <label>Location: </label>
+                <span id="delete-locationId"> </span>
+            </div>
+
+            <div>
+                <label>Quantity: </label>
+                <span id="delete-quantity"> </span>
+            </div>
+        </fieldset>
+        <button type="submit">Delete</button>
+        <button type="button" id="clearDeleteForm">Cancel</button>
+    </form>
+</div>
+
+{% block javascript %}
+<script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const productName = event.target.getAttribute("data-productName");
+            const locationId = event.target.getAttribute("data-locationId");
+            const aisle = event.target.getAttribute("data-aisle");
+            const shelf = event.target.getAttribute("data-shelf");
+            const slot = event.target.getAttribute("data-slot");
+            const quantity = event.target.getAttribute("data-quantity");
+
+            document.getElementById("update-id-display").innerText = id;
+            document.getElementById("update-id").value = id;
+            document.getElementById("update-productName").value = productName;
+            document.getElementById("update-locationId").value = locationId;
+            document.getElementById("update-quantity").value = quantity;
+
+            toggleDisplay("edit");
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute("data-id");
+            const productName = event.target.getAttribute("data-productName");
+            const locationId = event.target.getAttribute("data-locationId");
+            const aisle = event.target.getAttribute("data-aisle");
+            const shelf = event.target.getAttribute("data-shelf");
+            const slot = event.target.getAttribute("data-slot");
+            const quantity = event.target.getAttribute("data-quantity");
+
+            document.getElementById("delete-id-display").innerText = id;
+            document.getElementById("delete-id").value = id;
+            document.getElementById("delete-productName").innerText = productName;
+            document.getElementById("delete-locationId").innerText = locationId;
+            document.getElementById("delete-quantity").innerText = quantity;
+
+            toggleDisplay("delete");
+        });
+    });
+
+    document.getElementById("clearAddForm").addEventListener("click", () => {
+        document.getElementById("addProductLocation").reset()
+    });
+
+    document.getElementById("clearUpdateForm").addEventListener("click", () => {
+        document.getElementById("updateProductLocation").reset();
+        document.getElementById("update-id-display").innerText = "";
+    });
+
+    document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        document.getElementById("deleteProductLocation").reset();
+        document.getElementById("delete-id-display").innerText = "";
+        document.getElementById("delete-productName").innerText = "";
+        document.getElementById("delete-locationId").innerText = "";
+        document.getElementById("delete-quantity").innerText = "";
+    });
+
+    const addNewButton = document.getElementById("add-new");
+    addNewButton.addEventListener("click", (event) => {
+        toggleDisplay("add")
+    });
+
+    const toggleDisplay = (form) => {
+        addForm = document.getElementById("insert")
+        editForm = document.getElementById("update")
+        deleteForm = document.getElementById("delete")
+
+        if (form === "add") {
+            addForm.style.display = "block";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
+        } else if (form === "edit") {
+            addForm.style.display = "none";
+            editForm.style.display = "block";
+            deleteForm.style.display = "none";
+        } else if (form === "delete") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "block";
+        }
+
+    };
+
+</script>
+
+
 {% endblock %}
+
+{% endblock %}
+</div>

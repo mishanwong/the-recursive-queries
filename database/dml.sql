@@ -61,6 +61,16 @@ JOIN Customers AS c
 ON s.customerId = c.CustomerId
 ORDER BY sp.saleProductId;
 
+-- Subquery to get product name for form
+SELECT name AS productName FROM Products;
+
+-- Subquery to get saleId and customer name for form
+SELECT s.saleId, s.date, c.name AS customerName
+FROM Sales AS s
+LEFT JOIN Customers AS c
+ON s.customerId = c.customerId
+ORDER BY saleId ASC;
+
 -- Inserting new row into SalesProducts
 INSERT INTO SalesProducts (productId, saleId, quantity, lineTotal) 
 VALUES ((SELECT productId FROM Products WHERE name = %s), %s, %s, 
@@ -143,16 +153,33 @@ DELETE FROM Locations WHERE Locations.locationId = %s;
 -- ProductsLocations Table Queries -------------------------------
 
 -- Selecting all to display
-SELECT * FROM ProductsLocations;
+SELECT pl.productLocationId, p.name AS productName, l.locationId, CONCAT(l.aisle, '-', l.shelf, '-', l.slot) AS location, pl.quantity
+FROM ProductsLocations AS pl
+JOIN Products AS p
+ON pl.productId = p.productId
+JOIN Locations as l
+ON pl.locationId = l.locationId
+ORDER BY pl.productLocationId;
+
+-- Subquery for getting product names
+SELECT name AS productName FROM Products;
+
+-- Subquery for getting location data
+SELECT l.locationId, l.aisle, l.shelf, l.slot, l.capacity
+FROM Locations AS l;
 
 -- Inserting new row into ProductsLocations
 INSERT INTO ProductsLocations (productId, locationId, quantity)
-VALUES (:productId, :locationId, :quantity);
+VALUES ((SELECT productId FROM Products WHERE name = %s), %s, %s);
+
+-- Updating a row in ProductsLocations
+UPDATE ProductsLocations
+SET ProductsLocations.productId = (SELECT productId FROM Products WHERE Products.name = %s),
+ProductsLocations.locationId = %s, ProductsLocations.quantity = %s
+WHERE ProductsLocations.productLocationId = %s;
 
 -- Disassociating a Product with a Location
 -- (deleting a M:M relationship)
-DELETE FROM ProductsLocations
-WHERE productId = :productId_from_list
-AND locationId = :locationId_from_list;
+DELETE FROM ProductsLocations WHERE productLocationId = %s;
 
 ------------------------------------------------------------------------------------------------------

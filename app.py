@@ -117,6 +117,8 @@ def sales_products_delete():
         params = (saleProductId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/sales_products_browse")
+    else:
+        return "Invalid route"
 
 ########################################### PRODUCTS ######################################
 
@@ -548,7 +550,7 @@ def products_locations_delete():
         data = request.form
         productLocationId = data["productLocationId"]
         
-        query = "DELETE FROM ProductsLocations WHERE productLocationId = %s"
+        query = "DELETE FROM ProductsLocations WHERE productLocationId = %s;"
         params = (productLocationId,)
         db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/products_locations_browse")

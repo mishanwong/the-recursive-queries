@@ -4,6 +4,7 @@ body {
 }
 
 table {
+    background-color: #f5ecdf;
     width: 100%;
     border-collapse: collapse; 
     margin: 20px 0;

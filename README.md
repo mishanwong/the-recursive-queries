@@ -11,6 +11,14 @@
 
 # Citations for External Sources
 # -----------------------------------------------------------------
+#
 # Citation for following: app.py
 # Adapted from/based on cs340 github Flask starter guide
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+#
+#
+# Citation for following: db.py
+# Adapted from/based on cs340 github Flask starter guide
+# Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+#
+# -----------------------------------------------------------------

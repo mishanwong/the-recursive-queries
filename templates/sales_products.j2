@@ -1,5 +1,7 @@
 {% extends "base.j2" %}
 
+{# Displaying the rows #}
+
 {% block content %}
 <h2>SalesProducts</h2>
 <button id="add-new">Add New SaleProduct</button>
@@ -20,6 +22,7 @@
     <td>{{row[key]}}</td>
     {% endfor %}
     <td>
+    {# Edit Button and Delete Button for each row #}
         <button 
             class="edit-btn" 
             data-id="{{ row["saleProductId"] }}"  
@@ -47,6 +50,7 @@
 
 <div>
 
+{# Add Form #}
 <div id="insert" style="display: none">
     <h3>Add Sale Product</h3>
     <form id="addSaleProduct" name="addSaleProduct" method="post" action="{{ url_for("sales_products_new") }}">
@@ -54,6 +58,7 @@
             <div>
                 <label>Product</label>
                 <select name="name" required>
+                    {# Products Dropdown #}
                     <option value="" disabled selected>-- select an option --</option>
                     {% for product in products %}
                     <option value="{{ product["productName"] }}">{{ product["productName"] }}</option>
@@ -64,6 +69,7 @@
             <div>
                 <label>Sale ID</label>
                 <select name="saleId" required>
+                    {# Sales Dropdown #}
                     <option value="" disabled selected>-- select an option --</option>
                     {% for sale in sales %}
                     <option value="{{ sale["saleId"] }}">SaleID: {{ sale["saleId"] }}, Date: {{ sale["date"] }}, Customer: {{ sale["customerName"] }}</option> 
@@ -78,11 +84,11 @@
 
         </fieldset>
         <button type="submit">Add</button>
-        <button type="button" id="clearAddForm">Cancel</button>
+        <button type="button" id="clearAddForm">Clear</button>
     </form>
 </div>
 
-
+{# Edit Form #}
 <div id="update" style="display: none">
     <h3>Update Sale Product</h3>
     <form id="updateSaleProduct" name="updateSaleProduct" method="post" action="{{ url_for("sales_products_edit") }}">
@@ -127,7 +133,7 @@
     </form>
 </div>
 
-
+{# Delete Form #}
 <div id="delete" style="display: none">
     <h3>Delete Sale Product</h3>
     <form id="deleteSaleProduct" name="deleteSaleProduct" method="post" action="{{ url_for("sales_products_delete") }}">
@@ -158,6 +164,7 @@
     </form>
 </div>
 
+{# JavaScript to populate the desired forms with the data from the row #}
 {% block javascript %}
 <script>
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -198,6 +205,7 @@
         });
     });
 
+    // Clear/Cancel toggles to help manipulate the forms
     document.getElementById("clearAddForm").addEventListener("click", () => {
         document.getElementById("addSaleProduct").reset()
     });
@@ -220,6 +228,7 @@
         toggleDisplay("add")
     })
     
+    // Actual function to change the displays accordingly
     const toggleDisplay = (form) => {
         addForm = document.getElementById("insert")
         editForm = document.getElementById("update")

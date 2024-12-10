@@ -1,5 +1,7 @@
 {% extends "base.j2" %}
 
+{# Displaying the rows #}
+
 {% block content %}
 <h2>Sales</h2>
 <button id="add-new">Add New Sale</button>
@@ -20,6 +22,7 @@
     <td>{{row[key]}}</td>
     {% endfor %}
     <td>
+        {# Edit and Delete Button for each row #}
         <button 
             class="edit-btn" 
             data-id="{{ row["saleId"] }}"
@@ -41,6 +44,7 @@
 
 <div>
 
+{# Add Form #}
 <div id="insert" style="display: none">
     <h3>Add Sale</h3>
     <form id="addSale" name="addSale" method="post" action="{{ url_for("sales_new") }}">
@@ -52,6 +56,7 @@
             
             <div>
                 <label>Customer</label>
+                {# Customers dropdown #}
                 <select name="customerId">
                     <option value="" disabled selected>-- select an option --</option>
                     {% for customer in customers %}
@@ -66,7 +71,7 @@
     </form>
 </div>
 
-
+{# Edit Form #}
 <div id="update" style="display: none">
     <h3>Update Sale</h3>
     <form id="updateSale" name="updateSale" method="post" action="{{ url_for("sales_edit") }}">
@@ -95,10 +100,11 @@
             </div>
         </fieldset>
         <button type="submit">Update</button>
+        <button type="button" id="clearUpdateForm">Cancel</button>
     </form>
 </div>
 
-
+{# Delete Form #}
 <div id="delete" style="display: none">
     <h3>Delete Sale</h3>
     <form id="deleteSale" name="deleteSale" method="post" action="{{ url_for("sales_delete") }}">
@@ -120,9 +126,11 @@
             </div>
         </fieldset>
         <button type="submit">Delete</button>
+        <button type="button" id="clearDeleteForm">Cancel</button>
     </form>
 </div>
 
+{# JavaScript to populate the desired forms with the data from the row #}
 {% block javascript %}
 <script>
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -155,8 +163,15 @@
         });
     });
 
+    // clear/cancel toggles to help manipulate the forms
     document.getElementById("clearAddForm").addEventListener("click", () => {
         document.getElementById("addSale").reset()
+    });
+    document.getElementById("clearUpdateForm").addEventListener("click", () => {
+        toggleDisplay("none");
+    });
+    document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        toggleDisplay("none");
     });
 
     const addNewButton = document.getElementById("add-new")
@@ -164,6 +179,7 @@
         toggleDisplay("add")
     })
 
+    // toggle function to change the displays accordingly
     const toggleDisplay = (form) => {
         addForm = document.getElementById("insert")
         editForm = document.getElementById("update")
@@ -181,6 +197,10 @@
             addForm.style.display = "none";
             editForm.style.display = "none";
             deleteForm.style.display = "block";
+        } else if (form === "none") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
         }
 
     }

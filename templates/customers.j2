@@ -1,5 +1,7 @@
 {% extends "base.j2" %}
 
+{# Displaying the rows #}
+
 {% block content %}
 <h2>Customers</h2>
 <button id="add-new">Add New Customer</button>
@@ -20,6 +22,7 @@
     <td>{{row[key]}}</td>
     {% endfor %}
     <td>
+        {# Edit and Delete Button for each row #}
         <button 
             class="edit-btn" 
             data-id="{{ row["customerId"] }}" 
@@ -39,6 +42,7 @@
 
 <div>
 
+{# Add Form #}
 <div id="insert" style="display: none">
     <h3>Add Customer</h3>
     <form id="addCustomer" name="addCustomer" method="post" action="{{ url_for("customers_new") }}">
@@ -53,7 +57,7 @@
     </form>
 </div>
 
-
+{# Edit Form #}
 <div id="update" style="display: none">
     <h3>Update Customer</h3>
     <form id="updateCustomer" name="updateCustomer" method="post" action="{{ url_for("customers_edit") }}">
@@ -69,10 +73,11 @@
             </div>
         </fieldset>
         <button type="submit">Update</button>
+        <button type="button" id="clearUpdateForm">Cancel</button>
     </form>
 </div>
 
-
+{# Delete Form #}
 <div id="delete" style="display: none">
     <h3>Delete Customer</h3>
     <form id="deleteCustomer" name="deleteCustomer" method="post" action="{{ url_for("customers_delete") }}">
@@ -89,8 +94,11 @@
             </div>
         </fieldset>
         <button type="submit">Delete</button>
+        <button type="button" id="clearDeleteForm">Cancel</button>
     </form>
 </div>
+
+{# JavaScript to populate the desired forms with the data from the row #}
 {% block javascript %}
 <script>
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -118,8 +126,15 @@
         });
     });
 
+    // clear/cancel toggles to help manipulate the forms
     document.getElementById("clearAddForm").addEventListener("click", () => {
         document.getElementById("addCustomer").reset()
+    });
+    document.getElementById("clearUpdateForm").addEventListener("click", () => {
+        toggleDisplay("none");
+    });
+    document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        toggleDisplay("none");
     });
 
     const addNewButton = document.getElementById("add-new")
@@ -127,6 +142,7 @@
         toggleDisplay("add")
     })
 
+    // toggle function to change the displays accordingly
     const toggleDisplay = (form) => {
         addForm = document.getElementById("insert")
         editForm = document.getElementById("update")
@@ -144,6 +160,10 @@
             addForm.style.display = "none";
             editForm.style.display = "none";
             deleteForm.style.display = "block";
+        } else if (form === "none") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
         }
 
     }

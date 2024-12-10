@@ -1,5 +1,7 @@
 {% extends "base.j2" %}
 
+{# Displaying the rows #}
+
 {% block content %}
 <h2>Locations</h2>
 <button id="add-new">Add New Location</button>
@@ -20,6 +22,7 @@
     <td>{{row[key]}}</td>
     {% endfor %}
     <td>
+        {# Edit and Delete Button for each row #}
         <button 
             class="edit-btn"
             data-id="{{ row["locationId"] }}"
@@ -45,28 +48,28 @@
 
 <div>
 
-
+{# Add Form #}
 <div id="insert" style="display: none">
     <h3>Add Location</h3>
     <form id="addLocation" name="addLocation" method="post" action="{{ url_for("locations_new") }}">
         <fieldset>
             <div>
-                <label>Aisle</label>
+                <label>Aisle (Character/Number)</label>
                 <input type="text" id="aisle" name="aisle" maxlength="2" required />
             </div>
 
             <div>
-                <label>Shelf</label>
+                <label>Shelf (Number)</label>
                 <input type="number" min="1" id="shelf" name="shelf" maxlength="2" required />
             </div>
 
             <div>
-                <label>Slot</label>
+                <label>Slot (Number)</label>
                 <input type="number" min="1" id="slot" name="slot" maxlength="2" required />
             </div>
 
             <div>
-                <label>Capacity</label>
+                <label>Capacity (Number)</label>
                 <input type="number" id="capacity" name="capacity" required min="1" />
             </div>
         </fieldset>
@@ -75,7 +78,7 @@
     </form>
 </div>
 
-
+{# Edit Form #}
 <div id="update" style="display: none">
     <h3>Update Location</h3>
     <form id="updateLocation" name="updateLocation" method="post" action="{{ url_for("locations_edit") }}">
@@ -86,30 +89,31 @@
             </div>
 
             <div>
-                <label>Aisle</label>
+                <label>Aisle (Character/Number)</label>
                 <input type="text" id="update-aisle" name="aisle" maxlength="2" required />
             </div>
 
             <div>
-                <label>Shelf</label>
+                <label>Shelf (Number)</label>
                 <input type="text" id="update-shelf" name="shelf" maxlength="2" required />
             </div>
 
             <div>
-                <label>Slot</label>
+                <label>Slot (Number)</label>
                 <input type="text" id="update-slot" name="slot" maxlength="2" required />
             </div>
 
             <div>
-                <label>Capacity</label>
+                <label>Capacity (Number)</label>
                 <input type="number" id="update-capacity" name="capacity" required min="1" />
             </div>
         </fieldset>
         <button type="submit">Update</button>
+        <button type="button" id="clearUpdateForm">Cancel</button>
     </form>
 </div>
 
-
+{# Delete Form #}
 <div id="delete" style="display: none">
     <h3>Delete Location</h3>
     <form id="deleteLocation" name="deleteLocation" method="post" action="{{ url_for("locations_delete") }}">
@@ -136,9 +140,11 @@
             </div>
         </fieldset>
         <button type="submit">Delete</button>
+        <button type="button" id="clearDeleteForm">Cancel</button>
     </form>
 </div>
 
+{# JavaScript to populate the desired forms with the data from the row #}
 {% block javascript %}
 <script>
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -179,8 +185,15 @@
         });
     });
 
+    // clear/cancel toggles to help manipulate the forms
     document.getElementById("clearAddForm").addEventListener("click", () => {
         document.getElementById("addLocation").reset()
+    });
+    document.getElementById("clearUpdateForm").addEventListener("click", () => {
+        toggleDisplay("none");
+    });
+    document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        toggleDisplay("none");
     });
 
     const addNewButton = document.getElementById("add-new");
@@ -188,6 +201,7 @@
         toggleDisplay("add")
     });
 
+    // toggle function to change the displays accordingly
     const toggleDisplay = (form) => {
         addForm = document.getElementById("insert")
         editForm = document.getElementById("update")
@@ -205,6 +219,10 @@
             addForm.style.display = "none";
             editForm.style.display = "none";
             deleteForm.style.display = "block";
+        } else if (form === "none") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
         }
 
     }

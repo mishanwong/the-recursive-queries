@@ -1,5 +1,7 @@
 {% extends "base.j2" %}
 
+{# Displaying the rows #}
+
 {% block content %}
 <h2>ProductsLocations</h2>
 <button id="add-new">Add New ProductLocation</button>
@@ -20,6 +22,7 @@
     <td>{{row[key]}}</td>
     {% endfor %}
     <td>
+    {# Edit Button and Delete Button for each row #}
         <button 
             class="edit-btn" 
             data-id="{{ row["productLocationId"]}}"
@@ -51,12 +54,14 @@
 
 <div>
 
+{# Add Form #}
 <div id="insert" style="display: none">
     <h3>Add Product Location</h3>
     <form id="addProductLocation" name="addProductLocation" method="post" action="{{ url_for("products_locations_new")}}">
         <fieldset>
             <div>
                 <label>Product</label>
+                {# Products Dropdown #}
                 <select name="name" required>
                     <option value="" disabled selected>-- select an option --</option>
                     {% for product in products %}
@@ -67,6 +72,7 @@
 
             <div>
                 <label>Location ID</label>
+                {# Locations Dropdown #}
                 <select name="locationId" required>
                     <option value="" disabled selected>-- select an option --</option>
                     {% for location in locations %}
@@ -85,7 +91,7 @@
     </form>
 </div>
 
-
+{# Edit Form #}
 <div id="update" style="display: none">
     <h3>Update Product Location</h3>
     <form id="updateProductLocation" name="updateProductLocation" method="post" action="{{ url_for("products_locations_edit") }}">
@@ -128,7 +134,7 @@
     </form>
 </div>
 
-
+{# Delete Form #}
 <div id="delete" style="display: none">
     <h3>Delete Product Location</h3>
     <form id="deleteProductLocation" name="deleteProductLocation" method="post" action="{{ url_for("products_locations_delete")}}">
@@ -158,6 +164,7 @@
     </form>
 </div>
 
+{# JavaScript to populate the desired forms with the data from the row #}
 {% block javascript %}
 <script>
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -202,6 +209,7 @@
         });
     });
 
+    // Clear/Cancel toggles to help manipulate the forms
     document.getElementById("clearAddForm").addEventListener("click", () => {
         document.getElementById("addProductLocation").reset()
     });
@@ -227,6 +235,7 @@
         toggleDisplay("add")
     });
 
+    // Actual function to change the displays accordingly
     const toggleDisplay = (form) => {
         addForm = document.getElementById("insert")
         editForm = document.getElementById("update")

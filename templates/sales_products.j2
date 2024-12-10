@@ -204,8 +204,10 @@
     document.getElementById("clearUpdateForm").addEventListener("click", () => {
         document.getElementById("updateSaleProduct").reset()
         document.getElementById("update-id-display").innerText = "";
+        toggleDisplay("none");
     });
     document.getElementById("clearDeleteForm").addEventListener("click", () => {
+        toggleDisplay("none");
         document.getElementById("deleteSaleProduct").reset()
         document.getElementById("delete-id-display").innerText = "";
         document.getElementById('delete-productName').innerText = "";
@@ -235,6 +237,10 @@
             addForm.style.display = "none";
             editForm.style.display = "none";
             deleteForm.style.display = "block";
+        } else if (form === "none") {
+            addForm.style.display = "none";
+            editForm.style.display = "none";
+            deleteForm.style.display = "none";
         }
 
     }

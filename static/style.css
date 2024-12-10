@@ -3,6 +3,26 @@ body {
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+header {
+    padding: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: darkolivegreen;
+    background-color: #def5ff;
+    font-weight: bolder;
+    border: solid .5px rgb(54, 116, 156);
+    border-radius: 5px;
+    margin: 2px;
+    padding: 1px;
+}
+
+a:hover {
+    background-color: darkolivegreen;
+    color: #def5ff;
+}
+
 table {
     background-color: #f5ecdf;
     width: 100%;

@@ -2,6 +2,18 @@
 # Adapted from/based on cs340 github Flask starter guide
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
+# ----------------------- TABLE OF CONTENTS -----------------------
+# --- Imports and declarations
+# --- Index route
+# --- SalesProducts routes
+# --- Products routes
+# --- Sales routes
+# --- Customers routes
+# --- Categories routes
+# --- Locations routes
+# --- ProductsLocations routes
+# -----------------------------------------------------------------
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for # type: ignore
 from flask_cors import CORS
 import database.db as db
@@ -13,6 +25,7 @@ CORS(app)
 
 db_connection = db.connect_to_database()
 
+########################################### Index Route #########################################
 @app.route("/")
 def index():
     return render_template("main.j2")

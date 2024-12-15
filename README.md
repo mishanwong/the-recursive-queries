@@ -14,6 +14,7 @@
 #
 # Citation for following: app.py
 # Adapted from/based on cs340 github Flask starter guide
+# Individual routes and use of pymysql are original
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 #
 #
@@ -21,4 +22,15 @@
 # Adapted from/based on cs340 github Flask starter guide
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 #
+#
+# Jinja documentation and ChatGPT consulted for simple syntax clarification
+# https://jinja.palletsprojects.com/en/stable/
+# https://www.chatgpt.com/
+# 
+# Flask and MDN documentation referenced:
+# https://flask.palletsprojects.com/en/stable/
+# https://developer.mozilla.org/en-US/
+# 
+#
+# All other code written is original work. 
 # -----------------------------------------------------------------

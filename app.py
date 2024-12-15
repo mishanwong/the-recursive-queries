@@ -1,5 +1,6 @@
 # Citation for following: app.py
 # Adapted from/based on cs340 github Flask starter guide
+# Individual routes and use of pymysql are original
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
 # ----------------------- TABLE OF CONTENTS -----------------------

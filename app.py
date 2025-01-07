@@ -552,7 +552,7 @@ def products_locations_edit():
             WHERE ProductsLocations.productLocationId = %s;
             """
         params = (name, locationId, quantity, productLocationId)
-        cursor = cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
+        cursor = db.execute_query(db_connection=db_connection, query=query, query_params=params)
         return redirect("/products_locations_browse")
     else:
         return "Invalid route"
@@ -573,3 +573,21 @@ def products_locations_delete():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# -------- RESET ---------
+@app.route("/reset", methods=["POST"])
+def reset():
+    if request.method == "POST":
+
+        # set ddl.sql as variable for resetting database - maybe here, maybe within route
+        with open('database/ddl.sql', 'r') as file:
+            query = file.read()
+        
+        # print check, pls remove
+        print(query)
+        
+        cursor = db.execute_query(db_connection=db_connection, query=query)
+
+        return render_template("success.j2")
+    else:
+        return "Invalid route"

@@ -1,9 +1,8 @@
 -- Group 43: Mishan Wong, Matthew Wygal
--- ddl.sql
+-- ddl.sql;
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- SET AUTOCOMMIT=0;
+SET AUTOCOMMIT=0;
 START TRANSACTION;
 
 -- Table Creation ---------------------

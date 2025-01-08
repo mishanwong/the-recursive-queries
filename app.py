@@ -581,12 +581,15 @@ def reset():
 
         # set ddl.sql as variable for resetting database - maybe here, maybe within route
         with open('database/ddl.sql', 'r') as file:
-            query = file.read()
-        
-        # print check, pls remove
-        print(query)
-        
-        cursor = db.execute_query(db_connection=db_connection, query=query)
+            sql_content = file.read()
+
+        sql_statements = sql_content.split(';')
+
+        for statement in sql_statements:
+            if statement[:2] == "--":
+                continue
+            statement = statement + ";"
+            db.execute_query(db_connection=db_connection, query=statement)
 
         return render_template("success.j2")
     else:

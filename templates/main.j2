@@ -1,6 +1,25 @@
 {% extends "base.j2" %}
-<h2>Database Management System</h2>
+
 
 {% block content %}
-  
+    <h2>Database Management System</h2>
+  <form name="reset" id="reset" method="post" action="{{ url_for("reset") }}">
+    
+        <button type="submit">Reset Database Contents</button><span id="confirmation"> </span>
+    
+  </form>
+
+{% block javascript %}
+<script>
+    document.getElementById("reset").addEventListener("click", () => {
+        document.getElementById("confirmation").textContent = 'Database reset!';
+
+        setTimeout(function() {
+            document.getElementById("confirmation") = '';
+        }, 5000);  // 5 second timeout to clear message
+    });
+</script>
+
+
+{% endblock %}
 {% endblock %}

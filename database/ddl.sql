@@ -1,8 +1,9 @@
 -- Group 43: Mishan Wong, Matthew Wygal
--- ddl.sql
+-- ddl.sql;
 
 SET FOREIGN_KEY_CHECKS=0;
 SET AUTOCOMMIT=0;
+START TRANSACTION;
 
 -- Table Creation ---------------------
 DROP TABLE IF EXISTS Customers;
@@ -158,7 +159,7 @@ VALUES (
   (SELECT productId FROM Products WHERE Products.name = 'Travel Toothbrush Set'),
   3,
   1,
-  (SELECT unitPriceS FROM Products WHERE Products.name = 'Travel Toothbrush Set') * quantity
+  (SELECT unitPrice FROM Products WHERE Products.name = 'Travel Toothbrush Set') * quantity
 ),
 (
   (SELECT productId FROM Products WHERE Products.name = 'Super Sparkling Water'),
@@ -168,7 +169,7 @@ VALUES (
 ),
 (
   (SELECT productId FROM Products WHERE Products.name = 'Pocket Wet Tissues'),
-  3
+  3,
   3,
   (SELECT unitPrice FROM Products WHERE Products.name = 'Pocket Wet Tissues') * quantity
 );
